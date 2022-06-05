@@ -15,14 +15,14 @@ plotlyLayout <- function(plot,
                          legendHeight     = 1){
   plot <- plot %>% layout(yaxis   = list(title       = list(text = yaxisLabel,
                                                             font = list(size   = chieR::getFontSize("axisTitle"), 
-                                                                        family =  chieCXOData$font)),
-                                         tickfont    = list(family = chieCXOData$font,
+                                                                        family =  chieR::getFont("Standard"))),
+                                         tickfont    = list(family = chieR::getFont("Standard"),
                                                             size   = chieR::getFontSize("axis"))),
                           xaxis   = list(title = list(text = xaxisLabel,
                                                       font = list(size   = chieR::getFontSize("axisTitle"), 
-                                                                  family =  chieCXOData$font)),
+                                                                  family =  chieR::getFont("Standard"))),
                                          tickangle = 320,
-                                         tickfont  = list(family = chieCXOData$font,
+                                         tickfont  = list(family = chieR::getFont("Standard"),
                                                           size   = chieR::getFontSize("axis"))))
   if(horizontalLegend){
     plot <- plot %>% layout(legend = list(orientation = "h",
@@ -30,11 +30,11 @@ plotlyLayout <- function(plot,
                                           yanchor     = "top",
                                           x           = 0.5,
                                           y           = legendHeight,
-                                          font        = list(family = chieCXOData$font,
+                                          font        = list(family = chieR::getFont("Standard"),
                                                              size   = chieR::getFontSize("legend"))))
   } else {
     plot <- plot %>% layout(legend = list(y           = .5,
-                                          font        = list(family = chieCXOData$font,
+                                          font        = list(family = chieR::getFont("Standard"),
                                                              size   = chieR::getFontSize("legend"))))
   }
   return(plot)
