@@ -7,8 +7,8 @@
 #' @keywords query
 #' @export
 #' @examples
-#' sqlQuery()
-sqlQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", query = NULL){
+#' runSQLQuery()
+runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", query = NULL){
   
   if(is.null(table) & is.null(query)){
     abort("Must provide either table name or full SQL query")
