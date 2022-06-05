@@ -25,7 +25,8 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
   data <- data.table(sqlQuery(conn, query))
   
   if(!is.null(dateColumn)){
-    data[, (dateColumn) := as.Date(get(dateColumn), "%m/%d/%Y")]
+    #data[, (dateColumn) := as.Date(get(dateColumn), "%m/%d/%Y")]
+    data[, eval(dateColumn) := as.Date(get(dateColumn), "%m/%d/%Y")]
     setkeyv(data, dateColumn)    
   }
   
