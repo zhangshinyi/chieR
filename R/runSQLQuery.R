@@ -22,7 +22,7 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
     query <- sprintf(paste("SELECT", columns, "FROM %s"), table)
   }
   
-  data <- data.table(sqlQuery(conn, query))
+  data <- data.table::data.table(RODBC::sqlQuery(conn, query))
   
   if(!is.null(dateColumn)){
     data[, eval(dateColumn) := as.Date(get(dateColumn), "%m/%d/%Y")]

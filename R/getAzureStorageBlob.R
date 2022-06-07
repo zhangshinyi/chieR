@@ -8,14 +8,14 @@
 #' @examples
 #' getAzureStorageBlob()
 getAzureStorageBlob <- function(storageAccount, accountKey, container, filename){
-  endp         <- storage_endpoint(paste0("https://", storageAccount, ".blob.core.windows.net"), 
-                                   key = accountKey)
-  cont         <- storage_container(endp, container)
+  endp         <- AzureStor::storage_endpoint(paste0("https://", storageAccount, ".blob.core.windows.net"), 
+                                              key = accountKey)
+  cont         <- AzureStor::storage_container(endp, container)
   tempfilename <- tempfile()
   if(blob_exists(cont, filename)){
     print(paste0(filename, " file exists!"))
-    storage_download(cont, filename, tempfilename)
-    data         <- fread(tempfilename)
+    AzureStor::storage_download(cont, filename, tempfilename)
+    data         <- data.table::fread(tempfilename)
     return(data)
   } else {
     print(paste0("File doesn't exist at: ", Sys.time()))
