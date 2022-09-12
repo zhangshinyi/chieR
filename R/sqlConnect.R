@@ -1,15 +1,15 @@
 #' Connect to MoAD, other databases.
-#' @param server should be "chiemoaddev" or "dsireport"
+#' @param server should be "chiemoaddev", "chiemoadprd", or "dsireport"
 #' @keywords connection
 #' @export
 #' @examples
 #' sqlConnect()
 sqlConnect <- function(server){
-  if(!server %in% c("chiemoaddev", "dsireport")){
+  if(!server %in% c("chiemoaddev", "dsireport", "chiemoadprd")){
     stop("Invalid input for server")
   }
   managedID    <- ifelse(Sys.getenv("R_CONFIG_ACTIVE") == "rsconnect", TRUE, FALSE)
-  if(server == "chiemoaddev"){
+  if(server %in% c("chiemoaddev", "chiemoadprd")){
     idURL        <- "https://moaddev6131880268.vault.azure.net/secrets/dev-synapse-sqlpool-sp-id/"
     secretURL    <- "https://moaddev6131880268.vault.azure.net/secrets/dev-synapse-sqlpool-sp-secret/"
     database     <- "moad_sql"

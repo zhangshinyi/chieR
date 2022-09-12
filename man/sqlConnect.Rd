@@ -7,7 +7,7 @@
 sqlConnect(server)
 }
 \arguments{
-\item{server}{should be "chiemoaddev" or "dsireport"}
+\item{server}{should be "chiemoaddev", "chiemoadprd", or "dsireport"}
 }
 \description{
 Connect to MoAD, other databases.
