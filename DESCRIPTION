@@ -14,4 +14,4 @@ Depends:
     AzureStor (>= 3.6.0)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0.9000
+RoxygenNote: 7.2.3
