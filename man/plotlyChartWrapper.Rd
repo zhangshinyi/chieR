@@ -18,6 +18,8 @@ plotlyChartWrapper(
 )
 }
 \arguments{
+\item{data}{should be a data table with the columns Period, lens (if there's no lens, set lens to be the same value for every row), and value. The Order column is optional; if it exists, it should be unique to each Period value.}
+
 \item{mode}{should be "bar" or "lines"}
 
 \item{barmode}{should be options like "group", "relative", or "stacked"}
@@ -46,7 +48,6 @@ plotlyChartWrapper(data,
                    mode            = "bar",
                    barmode         = "group",
                    yaxisLabel      = "Number of telephones")
-plotlyChartWrapper()
 }
 \keyword{bar,}
 \keyword{line,}

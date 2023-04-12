@@ -1,5 +1,6 @@
 #' Input a string indicating the type of color palette you want.
 #' Options are Standard, Gen, HW Bucket, and Capability Gap
+#' @param data should be a data table with the columns Period, lens (if there's no lens, set lens to be the same value for every row), and value. The Order column is optional; if it exists, it should be unique to each Period value.
 #' @param mode should be "bar" or "lines"
 #' @param barmode should be options like "group", "relative", or "stacked"
 #' @param colorPalette should be acceptable types for chieR::getColor()
@@ -23,7 +24,6 @@
 #'                    mode            = "bar",
 #'                    barmode         = "group",
 #'                    yaxisLabel      = "Number of telephones")
-#' plotlyChartWrapper()
 plotlyChartWrapper <- function(data, mode,
                                barmode         = "relative",
                                colorPalette    = "Standard",
