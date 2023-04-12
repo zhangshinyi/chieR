@@ -2,8 +2,7 @@
 % Please edit documentation in R/plotlyChartWrapper.R
 \name{plotlyChartWrapper}
 \alias{plotlyChartWrapper}
-\title{Input a string indicating the type of color palette you want.
-Options are Standard, Gen, HW Bucket, and Capability Gap}
+\title{Wrapper function for line/bar plotly charts using Reynold's standard}
 \usage{
 plotlyChartWrapper(
   data,
@@ -27,8 +26,7 @@ plotlyChartWrapper(
 \item{colorPalette}{should be acceptable types for chieR::getColor()}
 }
 \description{
-Input a string indicating the type of color palette you want.
-Options are Standard, Gen, HW Bucket, and Capability Gap
+Wrapper function for line/bar plotly charts using Reynold's standard
 }
 \examples{
 data <- data.table(WorldPhones)[, Period := 2001:2007][, Order := 1:7][]
