@@ -41,6 +41,7 @@ getColors <- function(type = "Standard"){
                                    "FPGA"           = "#107C10",
                                    "Rack Infra"     = "#A7B0BF",
                                    "TBD"            = "#FFB900",
+                                   "PCIe"           = "#FEF000",
                                    "Buffer"         = "#D2B48C",
                                    "Capability Gap" = "#9BF00B",
                                    "Other"          = "#C3B7A2"),
