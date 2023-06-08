@@ -9,25 +9,27 @@
 #' @examples
 #' runSQLQuery()
 runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", query = NULL){
-  
+
   if(is.null(table) & is.null(query)){
     abort("Must provide either table name or full SQL query")
   }
-  
+
   if(is.null(query)){
     if(!identical("*", columns)){
       paste(columns, collapse = ",")
     }
-    
+
     query <- sprintf(paste("SELECT", columns, "FROM %s"), table)
   }
-  
+
+  print("chieR::runSQLQuery() query:")
+  print(query)
   data <- data.table::data.table(RODBC::sqlQuery(conn, query))
-  
+
   if(!is.null(dateColumn)){
     data[, eval(dateColumn) := as.Date(get(dateColumn), "%m/%d/%Y")]
-    setkeyv(data, dateColumn)    
+    setkeyv(data, dateColumn)
   }
-  
+
   return(data[])
 }
