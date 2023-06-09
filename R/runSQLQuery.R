@@ -23,6 +23,7 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
   }
 
   print("chieR::runSQLQuery() query:")
+  print(conn)
   print(query)
   data <- data.table::data.table(RODBC::sqlQuery(conn, query))
 
