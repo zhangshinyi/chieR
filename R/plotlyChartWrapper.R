@@ -61,10 +61,11 @@ plotlyChartWrapper <- function(data,
                     colors = lensColors, type = type, mode = mode) %>% plotly::layout(barmode = barmode,
                                                                                       legend = list(traceorder = "normal"))
   if (showBarTotals & (mode == "bar")) {
+    barTotals <- copy(data)[value != 0]
     if(totalsBySign){
-      barTotals <- copy(data)[, sign := sign(value)]
+      barTotals[, sign := sign(value)]
     } else {
-      barTotals <- copy(data)[, sign := 1]
+      barTotals[, sign := 1]
     }
 
     barTotals <- barTotals[, .(value = sum(value)), by = .(Period, sign)]
