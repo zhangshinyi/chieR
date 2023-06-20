@@ -23,72 +23,67 @@
 #'                    mode            = "bar",
 #'                    barmode         = "group",
 #'                    yaxisLabel      = "Number of telephones")
-plotlyChartWrapper <- function(data, mode,
+plotlyChartWrapper <- function(data,
+                               mode,
                                barmode         = "relative",
                                colorPalette    = "Standard",
                                yaxisLabel      = "",
                                showBarTotals   = FALSE,
                                barTotalDecimal = 0,
                                percent         = FALSE,
-                               legendHeight    = 1.1){
-  if(!mode %in% c("bar", "lines")){
+                               legendHeight    = 1.1,
+                               totalsBySign    = FALSE)
+{
+  if (!mode %in% c("bar", "lines")) {
     stop("Invalid input for mode")
   }
-
-  if(!barmode %in% c("group", "relative", "stacked")){
+  if (!barmode %in% c("group", "relative", "stacked")) {
     stop("Invalid input for barmode")
   }
-
-  if("Order" %in% names(data)){
+  if ("Order" %in% names(data)) {
     periodLevels <- unique(data[, Period, Order])[order(Order)]$Period
-    data[, Order := NULL]
-  } else {
+    data[, `:=`(Order, NULL)]
+  }
+  else {
     periodLevels <- unique(data$Period)
   }
-  data[, Period := factor(Period, levels = periodLevels)]
-
-  if(mode == "lines"){
+  data[, `:=`(Period, factor(Period, levels = periodLevels))]
+  if (mode == "lines") {
     type <- "scatter"
-  } else if(mode == "bar"){
+  }
+  else if (mode == "bar") {
     type <- NULL
   }
-
-  lensValues        <- sort(unique(data$lens))
-  lensColors        <- chieR::getColors(colorPalette)[1:length(lensValues)]
+  lensValues <- sort(unique(data$lens))
+  lensColors <- chieR::getColors(colorPalette)[1:length(lensValues)]
   names(lensColors) <- lensValues
+  output <- plot_ly(data, x = ~Period, y = ~value, color = ~lens,
+                    colors = lensColors, type = type, mode = mode) %>% plotly::layout(barmode = barmode,
+                                                                                      legend = list(traceorder = "normal"))
+  if (showBarTotals & (mode == "bar")) {
+    if(totalsBySign){
+      barTotals <- copy(data)[, sign := sign(value)]
+    } else {
+      barTotals <- copy(data)[, sign := 1]
+    }
 
-  output <- plot_ly(data,
-                    x        = ~Period,
-                    y        = ~value,
-                    color    = ~lens,
-                    colors   = lensColors,
-                    type     = type,
-                    mode     = mode) %>%
-    plotly::layout(barmode = barmode,
-                   legend  = list(traceorder = "normal"))
+    barTotals <- barTotals[, .(value = sum(value)), by = .(Period, sign)]
 
-  if(showBarTotals &
-     (mode == "bar")){
-    barTotals <- copy(data)[, .(value = sum(value)), by = Period]
-    barTotals[, text := format(round(ifelse(percent, 100, 1) * value, barTotalDecimal),
-                               nsmall   = barTotalDecimal,
-                               big.mark = ",")]
-    output <- output %>%
-      add_annotations(data = barTotals,
-                      x         = ~(as.numeric(Period) - 1),
-                      y         = ~value,
-                      text      = ~text,
-                      xref      = "x",
-                      yshift    = 15,
-                      showarrow = FALSE,
-                      bgcolor   = "white",
-                      opacity   = .85,
-                      font      = list(family = chieR::getFont("Standard"),
-                                       size   = chieR::getFontSize("annotation")))
+    barTotals[, `:=`(text, format(round(ifelse(percent, 100,
+                                               1) * value, barTotalDecimal), nsmall = barTotalDecimal,
+                                  big.mark = ","))]
+    output <- output %>% add_annotations(data      = barTotals,
+                                         x         = ~(as.numeric(Period) - 1),
+                                         y         = ~value,
+                                         text      = ~text,
+                                         xref      = "x",
+                                         yshift    = ~sign * 15,
+                                         showarrow = FALSE,
+                                         bgcolor   = "white",
+                                         opacity   = 0.85,
+                                         font      = list(family = chieR::getFont("Standard"),
+                                                          size = chieR::getFontSize("annotation")))
   }
-
-  chieR::plotlyLayout(output,
-                      yaxisLabel       = yaxisLabel,
-                      horizontalLegend = ifelse(length(lensValues) < 8, TRUE, FALSE),
-                      legendHeight     = legendHeight)
+  chieR::plotlyLayout(output, yaxisLabel = yaxisLabel, horizontalLegend = ifelse(length(lensValues) <
+                                                                                   8, TRUE, FALSE), legendHeight = legendHeight)
 }

@@ -13,7 +13,8 @@ plotlyChartWrapper(
   showBarTotals = FALSE,
   barTotalDecimal = 0,
   percent = FALSE,
-  legendHeight = 1.1
+  legendHeight = 1.1,
+  totalsBySign = FALSE
 )
 }
 \arguments{
