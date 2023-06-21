@@ -38,8 +38,8 @@ dateMapping <- function(startDate, endDate, moadConn = NULL){
 
   setkey(data, Date)
 
-  for(i in names(dateMapping)[!names(dateMapping) == "Date"]){
-    dateMapping[, eval(i) := factor(get(i), levels = unique(get(i)))]
+  for(i in names(data)[!names(data) == "Date"]){
+    data[, eval(i) := factor(get(i), levels = unique(get(i)))]
   }
 
   return(data[])
