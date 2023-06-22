@@ -3,6 +3,7 @@
 #' @param minBarLabel is the minimum value for which bar labels should be shown; assumed to be 1, but this can be crowded.
 #' @param barAxisHeight Height of axis for bars; optional.
 #' @param predictabilityLineName Name of line as shown in legend. Assumed by default to be Predictability.
+#' @param sourceName source to be passed to plot_ly() in preparation for linking with event_data()
 #' @keywords predictability, plotly, plot
 #' @export
 #' @examples
@@ -17,7 +18,8 @@
 predictabilityChart <- function(data,
                                 minBarLabel            = 1,
                                 barAxisHeight          = NULL,
-                                predictabilityLineName = "Predictability"){
+                                predictabilityLineName = "Predictability",
+                                sourceName             = NULL){
 
   # Assume that anything other than the Period and Predictability columns is intended to be a bar
   barLevels <- names(data)[!names(data) %in% c("Period", "Predictability")]
@@ -30,7 +32,7 @@ predictabilityChart <- function(data,
   barColors        <- chieR::getColors()[1:length(barLevels)]
   names(barColors) <- barLevels
 
-  fig <- plot_ly() %>%
+  fig <- plot_ly(source = sourceName) %>%
     add_bars(x           = ~barData$Period,
              y           = ~barData$value,
              name        = ~barData$variable,

@@ -3,6 +3,7 @@
 #' @param mode should be "bar" or "lines"
 #' @param barmode should be options like "group", "relative", or "stacked"
 #' @param colorPalette should be acceptable types for chieR::getColor()
+#' @param sourceName source to be passed to plot_ly() in preparation for linking with event_data()
 #' @keywords line, bar, plotly, plot
 #' @export
 #' @examples
@@ -32,7 +33,8 @@ plotlyChartWrapper <- function(data,
                                barTotalDecimal = 0,
                                percent         = FALSE,
                                legendHeight    = 1.1,
-                               totalsBySign    = FALSE)
+                               totalsBySign    = FALSE,
+                               sourceName      = NULL)
 {
   if (!mode %in% c("bar", "lines")) {
     stop("Invalid input for mode")
@@ -57,7 +59,7 @@ plotlyChartWrapper <- function(data,
   lensValues <- sort(unique(data$lens))
   lensColors <- chieR::getColors(colorPalette)[1:length(lensValues)]
   names(lensColors) <- lensValues
-  output <- plot_ly(data, x = ~Period, y = ~value, color = ~lens,
+  output <- plot_ly(data, x = ~Period, y = ~value, color = ~lens, source = sourceName,
                     colors = lensColors, type = type, mode = mode) %>% plotly::layout(barmode = barmode,
                                                                                       legend = list(traceorder = "normal"))
   if (showBarTotals & (mode == "bar")) {

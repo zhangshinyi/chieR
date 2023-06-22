@@ -14,7 +14,8 @@ plotlyChartWrapper(
   barTotalDecimal = 0,
   percent = FALSE,
   legendHeight = 1.1,
-  totalsBySign = FALSE
+  totalsBySign = FALSE,
+  sourceName = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ plotlyChartWrapper(
 \item{barmode}{should be options like "group", "relative", or "stacked"}
 
 \item{colorPalette}{should be acceptable types for chieR::getColor()}
+
+\item{sourceName}{source to be passed to plot_ly() in preparation for linking with event_data()}
 }
 \description{
 Wrapper function for line/bar plotly charts using Reynold's standard
