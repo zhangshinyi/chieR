@@ -53,7 +53,7 @@ predictabilityChart <- function(data,
     dataByPeriod  <- merge(barData[, .(barTotal = sum(value)), by = Period],
                            data[, .(Period, Predictability)],
                            by = "Period")[, axisHeight := (barTotal / Predictability)]
-    barAxisHeight <- 10 + ceiling(max(dataByPeriod[!is.infinite(axisHeight)]$axisHeight)/10) * 10
+    barAxisHeight <- 10 + ceiling(max(dataByPeriod[!is.infinite(axisHeight) & !is.nan(axisHeight)]$axisHeight)/10) * 10
   }
   fig <- fig %>% layout(yaxis = list(range = c(0, barAxisHeight)))
 
