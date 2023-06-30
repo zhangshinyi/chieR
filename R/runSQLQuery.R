@@ -16,7 +16,7 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
 
   if(is.null(query)){
     if(!identical("*", columns)){
-      paste(columns, collapse = ",")
+      columns <- paste(columns, collapse = ",")
     }
 
     query <- sprintf(paste("SELECT", columns, "FROM %s"), table)
