@@ -3,8 +3,6 @@
 #' @keywords vline, vertical, line
 #' @export
 #' @examples
-#'
-#'
 vline <- function(x){
   list(type = "line",
        y0   = 0,

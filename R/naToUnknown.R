@@ -2,6 +2,8 @@
 #' @param data is a data table
 #' @param filterCols is a vector of column names in data
 #' @keywords filter, NA, Unknown
+#' @export
+#' @examples
 naToUnknown <- function(data, filterCols){
   filterCols <- filterCols[filterCols %in% names(data)]
   if(length(filterCols) > 0){
