@@ -35,8 +35,8 @@ data   <- rbind(data.table(Period   = factor(months, levels = months),
                            value    = -sample(0:30, 5, replace = FALSE)))
 priorQueue <- 50
 totalLine  <- data[, .(Backlog = priorQueue + sum(value)), by = .(Period)]
-funcs$burndownChart(burndownBars  = data,
-                    backlogLine  = totalLine)
+burndownChart(burndownBars  = data,
+              backlogLine  = totalLine)
 }
 \keyword{burndown,}
 \keyword{plot}

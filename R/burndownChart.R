@@ -24,8 +24,8 @@
 #'                            value    = -sample(0:30, 5, replace = FALSE)))
 #' priorQueue <- 50
 #' totalLine  <- data[, .(Backlog = priorQueue + sum(value)), by = .(Period)]
-#' funcs$burndownChart(burndownBars  = data,
-#'                     backlogLine  = totalLine)
+#' burndownChart(burndownBars  = data,
+#'               backlogLine  = totalLine)
 burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05){
   barTotals <- copy(burndownBars)[value != 0][, sign := sign(value)]
   barTotals <- barTotals[, .(value = sum(value)), by = .(Period, sign)]
