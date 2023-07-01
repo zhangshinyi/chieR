@@ -7,11 +7,13 @@
 naToUnknown(data, filterCols)
 }
 \arguments{
-\item{x}{is the x-axis location of the vertical line.}
+\item{data}{is a data table}
+
+\item{filterCols}{is a vector of column names in data}
 }
 \description{
 Wrapper function to change NA values to "Unknown". Important because filtering will ignore NA values.
 }
-\keyword{line}
-\keyword{vertical,}
-\keyword{vline,}
+\keyword{NA,}
+\keyword{Unknown}
+\keyword{filter,}

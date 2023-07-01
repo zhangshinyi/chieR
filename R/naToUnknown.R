@@ -1,6 +1,11 @@
 #' Wrapper function to change NA values to "Unknown". Important because filtering will ignore NA values.
-#' @param x is the x-axis location of the vertical line.
-#' @keywords vline, vertical, line
+#' @param data is a data table
+#' @param filterCols is a vector of column names in data
+#' @keywords filter, NA, Unknown
 naToUnknown <- function(data, filterCols){
-  data[, (filterCols) := lapply(.SD, function(i){ i[is.na(i)] <- "Unknown"; i }), .SDcols = filterCols]
+  filterCols <- filterCols[filterCols %in% names(data)]
+  if(length(filterCols) > 0){
+    data <- data[, (filterCols) := lapply(.SD, function(i){ i[is.na(i)] <- "Unknown"; i }), .SDcols = filterCols]
+  }
+  data
 }
