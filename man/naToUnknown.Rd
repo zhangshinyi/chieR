@@ -4,12 +4,16 @@
 \alias{naToUnknown}
 \title{Wrapper function to change NA values to "Unknown". Important because filtering will ignore NA values.}
 \usage{
-naToUnknown(data, filterCols)
+naToUnknown(data, filterCols, charReplace = "Unknown", numReplace = -999)
 }
 \arguments{
 \item{data}{is a data table}
 
 \item{filterCols}{is a vector of column names in data}
+
+\item{charReplace}{is the string replacement for NAs.}
+
+\item{numReplace}{is the numeric replacement for NAs.}
 }
 \description{
 Wrapper function to change NA values to "Unknown". Important because filtering will ignore NA values.
