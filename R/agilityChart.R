@@ -36,6 +36,7 @@ agilityPlot <- function(boxplotData, plotlyRangemode = NULL){
                 name       = "Average",
                 marker     = list(size  = 10,
                                   color = "#000000")) %>%
-    layout(yaxis  = list(rangemode = plotlyRangemode))
+    layout(yaxis  = list(rangemode = plotlyRangemode),
+           margin = list(l = 0))
   chieR::plotlyLayout(boxplot)
 }

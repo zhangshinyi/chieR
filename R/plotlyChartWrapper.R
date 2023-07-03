@@ -75,18 +75,21 @@ plotlyChartWrapper <- function(data,
     barTotals[, `:=`(text, format(round(ifelse(percent, 100,
                                                1) * value, barTotalDecimal), nsmall = barTotalDecimal,
                                   big.mark = ","))]
-    output <- output %>% add_annotations(data      = barTotals,
-                                         x         = ~(as.numeric(Period) - 1),
-                                         y         = ~value,
-                                         text      = ~text,
-                                         xref      = "x",
-                                         yshift    = ~sign * 15,
-                                         showarrow = FALSE,
-                                         bgcolor   = "white",
-                                         opacity   = 0.85,
-                                         font      = list(family = chieR::getFont("Standard"),
-                                                          size = chieR::getFontSize("annotation")))
+    output <- output %>%
+      add_annotations(data      = barTotals,
+                      x         = ~(as.numeric(Period) - 1),
+                      y         = ~value,
+                      text      = ~text,
+                      xref      = "x",
+                      yshift    = ~sign * 15,
+                      showarrow = FALSE,
+                      bgcolor   = "white",
+                      opacity   = 0.85,
+                      font      = list(family = chieR::getFont("Standard"),
+                                       size = chieR::getFontSize("annotation")))
   }
+  output <- output %>%
+    layout(margin = list(l = 0))
   chieR::plotlyLayout(output, yaxisLabel = yaxisLabel, horizontalLegend = ifelse(length(lensValues) <
                                                                                    8, TRUE, FALSE), legendHeight = legendHeight)
 }

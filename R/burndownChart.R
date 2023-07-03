@@ -60,7 +60,8 @@ burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizo
                     bgcolor   = "white",
                     opacity   = 0.85,
                     font      = list(family = chieR::getFont("Standard"),
-                                     size  = chieR::getFontSize("annotation")))
+                                     size  = chieR::getFontSize("annotation"))) %>%
+    layout(margin = list(l = 0))
   if(is.null(horizontalLegend)){
     horizontalLegend <- ifelse(numLensVals < 8, TRUE, FALSE)
   }
