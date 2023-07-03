@@ -4,12 +4,19 @@
 \alias{burndownChart}
 \title{Wrapper function for burndown plotly charts using Reynold's standard}
 \usage{
-burndownChart(burndownBars, backlogLine, legendHeight = 1.05)
+burndownChart(
+  burndownBars,
+  backlogLine,
+  legendHeight = 1.05,
+  horizontalLegend = NULL
+)
 }
 \arguments{
 \item{burndownBars}{is a data table with the bar values; requires the columns Period, lens, and value. Note that the variable column in the example is not required; a column to distinguish incoming/outgoing items is likely helpful (and a prerequisite for any aggregation done prior).}
 
 \item{backlogLine}{is a data table with the backlog values for each period; requres the columns Period and Backlog.}
+
+\item{horizontalLegend}{is a boolean value indicating whether the legend should be shown horizontally at the top or vertically on the right.}
 }
 \description{
 Wrapper function for burndown plotly charts using Reynold's standard
