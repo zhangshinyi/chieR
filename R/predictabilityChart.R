@@ -37,6 +37,7 @@ predictabilityChart <- function(data,
              y           = ~barData$value,
              name        = ~barData$variable,
              type        = "bar",
+             yaxis       = "y2",
              color       = ~barData$variable,
              # opacity     = .4,
              # showlegend  = FALSE,
@@ -44,9 +45,10 @@ predictabilityChart <- function(data,
              legendgroup = "Bars",
              orientation = "v") %>%
     layout(barmode = "relative",
-           yaxis   = list(title    = "",
-                          showgrid = FALSE,
-                          side     = "right"))
+           yaxis2   = list(title    = "",
+                           showgrid = FALSE,
+                           overlaying = "y",
+                           side     = "left"))
 
   # Set bar axis height
   if(is.null(barAxisHeight)){
@@ -55,14 +57,14 @@ predictabilityChart <- function(data,
                            by = "Period")[, axisHeight := (barTotal / Predictability)]
     barAxisHeight <- 10 + ceiling(max(dataByPeriod[!is.infinite(axisHeight) & !is.nan(axisHeight)]$axisHeight)/10) * 10
   }
-  fig <- fig %>% layout(yaxis = list(range = c(0, barAxisHeight)))
+  fig <- fig %>% layout(yaxis2 = list(range = c(0, barAxisHeight)))
 
   # Add line for predictability
   predictabilityLineColor <- chieR::getColors()[2]
   fig <- fig %>%
     add_trace(x           = ~data$Period,
               y           = ~data$Predictability,
-              yaxis       = "y2",
+              # yaxis       = "y2",
               name        = predictabilityLineName,
               mode        = "lines+markers",
               legendgroup = "Lines",
@@ -76,7 +78,7 @@ predictabilityChart <- function(data,
                     y         = ~data[!is.nan(Predictability)]$Predictability,
                     text      = ~paste0(gsub(" ", "", format(round(100*data[!is.nan(Predictability)]$Predictability, 2), nsmall = 2)), "%"),
                     xref      = "x",
-                    yref      = "y2",
+                    yref      = "y",
                     yshift    = 15,
                     showarrow = FALSE,
                     bgcolor   = "white",
@@ -87,7 +89,7 @@ predictabilityChart <- function(data,
                     y         = ~barData[value >= minBarLabel]$labelHeight,
                     text      = ~barData[value >= minBarLabel]$value,
                     xref      = "x",
-                    yref      = "y",
+                    yref      = "y2",
                     showarrow = FALSE,
                     bgcolor   = "white",
                     opacity   = .85,
@@ -96,12 +98,12 @@ predictabilityChart <- function(data,
 
   # Predictability axis formatting
   fig <- fig %>%
-    layout(yaxis2  = list(title      = "",
-                          tickformat = ".0%",
-                          showgrid   = FALSE,
-                          range      = c(0, 1.05),
-                          overlaying = "y",
-                          side       = "left"))
+    layout(yaxis  = list(title      = "",
+                         tickformat = ".0%",
+                         showgrid   = FALSE,
+                         range      = c(0, 1.05),
+                         # overlaying = "y",
+                         side       = "right"))
 
   chieR::plotlyLayout(fig, horizontalLegend = FALSE) %>%
     plotly::config(displayModeBar = FALSE) %>%
