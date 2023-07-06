@@ -9,7 +9,8 @@ predictabilityChart(
   minBarLabel = 1,
   barAxisHeight = NULL,
   predictabilityLineName = "Predictability",
-  sourceName = NULL
+  sourceName = NULL,
+  legendHeight = NULL
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ predictabilityChart(
 \item{predictabilityLineName}{Name of line as shown in legend. Assumed by default to be Predictability.}
 
 \item{sourceName}{source to be passed to plot_ly() in preparation for linking with event_data()}
+
+\item{legendHeight}{Adjust the height of the legend if necessary}
 }
 \description{
 Wrapper function for predictability plotly charts using Reynold's standard

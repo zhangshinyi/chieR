@@ -4,6 +4,7 @@
 #' @param barAxisHeight Height of axis for bars; optional.
 #' @param predictabilityLineName Name of line as shown in legend. Assumed by default to be Predictability.
 #' @param sourceName source to be passed to plot_ly() in preparation for linking with event_data()
+#' @param legendHeight Adjust the height of the legend if necessary
 #' @keywords predictability, plotly, plot
 #' @export
 #' @examples
@@ -19,7 +20,8 @@ predictabilityChart <- function(data,
                                 minBarLabel            = 1,
                                 barAxisHeight          = NULL,
                                 predictabilityLineName = "Predictability",
-                                sourceName             = NULL){
+                                sourceName             = NULL,
+                                legendHeight           = NULL){
 
   # Assume that anything other than the Period and Predictability columns is intended to be a bar
   barLevels <- names(data)[!names(data) %in% c("Period", "Predictability")]
@@ -42,7 +44,7 @@ predictabilityChart <- function(data,
              # opacity     = .4,
              # showlegend  = FALSE,
              colors      = barColors,
-             legendgroup = "Bars",
+             # legendgroup = "Bars",
              orientation = "v") %>%
     layout(barmode = "relative",
            yaxis2   = list(title    = "",
@@ -67,7 +69,7 @@ predictabilityChart <- function(data,
               # yaxis       = "y2",
               name        = predictabilityLineName,
               mode        = "lines+markers",
-              legendgroup = "Lines",
+              # legendgroup = "Lines",
               line        = list(color = predictabilityLineColor),
               marker      = list(color = predictabilityLineColor),
               type        = "scatter")
@@ -105,7 +107,15 @@ predictabilityChart <- function(data,
                          # overlaying = "y",
                          side       = "right"))
 
-  chieR::plotlyLayout(fig, horizontalLegend = FALSE) %>%
+  # Legend orientation
+  legendItems <- length(barLevels) + 1
+  if(legendItems < 8){
+    horizontalLegend <- TRUE
+  } else {
+    horizontalLegend <- FALSE
+  }
+
+  chieR::plotlyLayout(fig, horizontalLegend = horizontalLegend, legendHeight = legendHeight) %>%
     plotly::config(displayModeBar = FALSE) %>%
     layout(xaxis  = list(title = ""))
 }
