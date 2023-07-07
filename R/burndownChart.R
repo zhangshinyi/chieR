@@ -28,6 +28,11 @@
 #' burndownChart(burndownBars  = data,
 #'               backlogLine  = totalLine)
 burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL){
+
+  if(!is.factor(burndownBars$lens)){
+    burndownBars <- copy(burndownBars)[, lens := factor(lens, levels = sort(unique(lens)))]
+  }
+
   barTotals <- copy(burndownBars)[value != 0][, sign := sign(value)]
   barTotals <- barTotals[, .(value = sum(value)), by = .(Period, sign)]
   barTotals[, `:=`(text, format(round(value, 0), nsmall = 0, big.mark = ","))]

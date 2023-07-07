@@ -42,6 +42,11 @@ plotlyChartWrapper <- function(data,
   if (!barmode %in% c("group", "relative", "stacked")) {
     stop("Invalid input for barmode")
   }
+
+  if(!is.factor(data$lens)){
+    data[, lens := factor(lens, levels = sort(unique(lens)))]
+  }
+
   if ("Order" %in% names(data)) {
     periodLevels <- unique(data[, Period, Order])[order(Order)]$Period
     data[, `:=`(Order, NULL)]
