@@ -22,5 +22,8 @@ naToUnknown <- function(data, filterCols, charReplace = "Unknown", numReplace = 
       data <- data[, (numCols)  := lapply(.SD, function(i){ i[is.na(i)] <- numReplace; i }),  .SDcols = numCols]
     }
   }
+
+  data[, (filterCols) := lapply(.SD, function(i){ factor(i, levels = sort(unique(i))) }), .SDcols = filterCols]
+
   data
 }
