@@ -15,7 +15,9 @@ plotlyChartWrapper(
   percent = FALSE,
   legendHeight = 1.1,
   totalsBySign = FALSE,
-  sourceName = NULL
+  sourceName = NULL,
+  tickFormat = NULL,
+  hoverFormat = NULL
 )
 }
 \arguments{

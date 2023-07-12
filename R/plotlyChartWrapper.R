@@ -34,7 +34,9 @@ plotlyChartWrapper <- function(data,
                                percent         = FALSE,
                                legendHeight    = 1.1,
                                totalsBySign    = FALSE,
-                               sourceName      = NULL)
+                               sourceName      = NULL,
+                               tickFormat      = NULL,
+                               hoverFormat     = NULL)
 {
   if (!mode %in% c("bar", "lines")) {
     stop("Invalid input for mode")
@@ -75,6 +77,17 @@ plotlyChartWrapper <- function(data,
   output <- plot_ly(data, x = ~Period, y = ~value, color = ~lens, source = sourceName,
                     colors = lensColors, type = type, mode = mode) %>% plotly::layout(barmode = barmode,
                                                                                       legend = list(traceorder = "normal"))
+
+  if(!is.null(tickFormat)){
+    output <- output %>%
+      layout(yaxis  = list(tickformat  = tickFormat))
+  }
+
+  if(!is.null(hoverFormat)){
+    output <- output %>%
+      layout(yaxis  = list(hoverformat = hoverFormat))
+  }
+
   if (showBarTotals & (mode == "bar")) {
     barTotals <- copy(data)[value != 0]
     if(totalsBySign){
@@ -85,9 +98,10 @@ plotlyChartWrapper <- function(data,
 
     barTotals <- barTotals[, .(value = sum(value)), by = .(Period, sign)]
 
-    barTotals[, `:=`(text, format(round(ifelse(percent, 100,
-                                               1) * value, barTotalDecimal), nsmall = barTotalDecimal,
-                                  big.mark = ","))]
+    barTotals[, `:=`(text, paste0(format(round(ifelse(percent, 100,
+                                                      1) * value, barTotalDecimal), nsmall = barTotalDecimal,
+                                         big.mark = ","),
+                                  ifelse(percent, "%", "")))]
     output <- output %>%
       add_annotations(data      = barTotals,
                       x         = ~(as.numeric(Period) - 1),
@@ -106,3 +120,4 @@ plotlyChartWrapper <- function(data,
   chieR::plotlyLayout(output, yaxisLabel = yaxisLabel, horizontalLegend = ifelse(length(lensValues) <
                                                                                    8, TRUE, FALSE), legendHeight = legendHeight)
 }
+
