@@ -116,7 +116,9 @@ plotlyChartWrapper <- function(data,
                                        size = chieR::getFontSize("annotation")))
   }
   output <- output %>%
-    layout(margin = list(l = 0))
+    layout(margin     = list(l = 0),
+           showlegend = TRUE)
+
   chieR::plotlyLayout(output, yaxisLabel = yaxisLabel, horizontalLegend = ifelse(length(lensValues) <
                                                                                    8, TRUE, FALSE), legendHeight = legendHeight)
 }
