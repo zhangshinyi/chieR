@@ -11,7 +11,8 @@ trendStandard(
   trendData,
   keyword,
   title,
-  percentTF = FALSE
+  percentTF = FALSE,
+  defaultTimeInterval = "Month"
 )
 }
 \arguments{
