@@ -5,7 +5,9 @@
 #' @keywords filters
 #' @export
 #' @examples
-trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, defaultTimeInterval = "Month"){
+trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE){
+  trend <- reactiveValues()
+
   filterCols <- reactive({
     shiny::req(trendData$filterCols)
     filters <- trendData$filterCols
@@ -141,6 +143,12 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
   })
 
   output[[paste0(keyword, "UI")]] <- renderUI({
+    shiny::req(is.logical(showTable))
+    if(showTable){
+      tableOutput <- DT::dataTableOutput(paste0(keyword, "Table"))
+    } else {
+      tableOutput <- NULL
+    }
     list(column(width = 12,
                 div(style = "display:inline-block; float:right",
                     tipify(actionButton(paste0("reset", keyword, "Input"),
@@ -157,6 +165,7 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
                       solidHeader = TRUE,
                       plotlyOutput(paste0(keyword, "Plot"),
                                    height = "590px"),
+                      tableOutput,
                       align = "center")
            )))
   })
@@ -189,6 +198,53 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
                               hoverFormat     = hoverFormat,
                               tickFormat      = tickFormat,
                               barTotalDecimal = 0,
-                              totalsBySign    = TRUE)
+                              totalsBySign    = TRUE,
+                              sourceName      = paste0(keyword, "Plot"))
   })
+
+  if(showTable){
+    observeEvent(event_data("plotly_click", source = paste0(keyword, "Plot")), {
+      shiny::req(trendDatePeriod())
+      clickInfo       <- event_data("plotly_click", source = paste0(keyword, "Plot"))
+      lens            <- input[[paste0(keyword, "Lens")]]
+      selectedLensVal <- as.character(levels(trendDatePeriod()[[lens]])[clickInfo$curveNumber + 1])
+      data            <- copy(trendDatePeriod())[Period == clickInfo$x]
+      if(lens %in% names(data)){
+        data[, eval(lens) := as.character(get(lens))]
+        if(selectedLensVal %in% data[[lens]]){
+          data <- data[get(lens) == selectedLensVal]
+        }
+      }
+      data[, Period := NULL]
+      trend$tableData <- copy(data)
+    })
+
+    observeEvent(input[[paste0("reset", keyword, "Input")]], {
+      trend$tableData <- copy(trendDatePeriod())
+    })
+
+    output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+      shiny::req(trendDatePeriod())
+
+      if(is.null(event_data("plotly_click", source = paste0(keyword, "Plot")))){
+        data <- copy(trendDatePeriod())
+      } else {
+        data <- copy(trend$tableData)
+      }
+
+      shiny::req(nrow(data) > 0)
+
+      data <- data[, c("Date", addlTableColumns, trendData$filterCols), with = FALSE]
+
+      # Server or client side processing:
+      # The server argument determines whether the data is processed on the server
+      # side or the client (browser) side. If server = TRUE (the default), the
+      # browser receives only the displayed data. If server = FALSE the browser
+      # receives all the data, which can slow it down if the dataset is large.
+      DT::datatable(copy(data),
+                    options = list(lengthMenu = c(20, 50),
+                                   scrollX    = TRUE,
+                                   server     = TRUE))
+    })
+  }
 }

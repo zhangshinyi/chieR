@@ -12,7 +12,9 @@ trendStandard(
   keyword,
   title,
   percentTF = FALSE,
-  defaultTimeInterval = "Month"
+  defaultTimeInterval = "Month",
+  addlTableColumns = NULL,
+  showTable = FALSE
 )
 }
 \arguments{
