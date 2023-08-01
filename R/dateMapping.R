@@ -38,6 +38,8 @@ dateMapping <- function(startDate, endDate, moadConn = NULL){
 
   setkey(data, Date)
 
+  data[(Date <= as.Date("2019-12-31")) & (is.na(Semester)), Semester := "Pre-Mn"]
+
   for(i in names(data)[!names(data) == "Date"]){
     data[, eval(i) := factor(get(i), levels = unique(get(i)))]
   }
