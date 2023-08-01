@@ -4,7 +4,16 @@
 \alias{agilityStandard}
 \title{Standard for agility charts}
 \usage{
-agilityStandard(input, output, session, agilityData, keyword)
+agilityStandard(
+  input,
+  output,
+  session,
+  agilityData,
+  keyword,
+  boxTitle = "Agility",
+  agilityActionButtonGroupList = NULL,
+  actionButtonInputFunction = NULL
+)
 }
 \arguments{
 \item{input}{is passed from Shiny server}
