@@ -9,6 +9,7 @@ standardInputs(
   filterCols,
   type,
   naToUnknownTF = FALSE,
+  moadConn = chieR::sqlConnect(server = "chiemoadprd"),
   semesterDates = chieR::semesterDates(moadConn = moadConn)[]
 )
 }
