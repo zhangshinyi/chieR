@@ -5,7 +5,7 @@
 #' @keywords filters
 #' @export
 #' @examples
-trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE){
+trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE, averageByPeriod = FALSE){
   trend <- reactiveValues()
 
   filterCols <- reactive({
@@ -111,8 +111,20 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
     shiny::req(trendDatePeriod(), nrow(trendDatePeriod()) > 0,
                input[[paste0(keyword, "Lens")]],
                input[[paste0(keyword, "DateRange")]])
-    data <- copy(trendDatePeriod())[(Date >= min(input[[paste0(keyword, "DateRange")]])) &
-                                      (Date <= max(input[[paste0(keyword, "DateRange")]]))]
+
+    dateRange <- input[[paste0(keyword, "DateRange")]]
+
+    data <- copy(trendDatePeriod())[(Date >= min(dateRange)) & (Date <= max(dateRange))]
+
+    if(averageByPeriod){
+      periodMapping <- copy(trendPeriodMapping())[(Date >= min(dateRange)) & (Date <= max(dateRange))][, numDays := 1]
+      numDays       <- periodMapping[, .(numDays = sum(numDays)), by = .(Period)]
+      data          <- merge(data,
+                             numDays,
+                             by = "Period",
+                             all.x = TRUE)[, Count := (Count / numDays)][, numDays := NULL]
+    }
+
 
     if(input[[paste0(keyword, "Lens")]] != "None"){
       data <- data[, .(Count = sum(Count)), by = c("Period", input[[paste0(keyword, "Lens")]])]
