@@ -56,11 +56,11 @@ plotlyChartWrapper <- function(data,
   else {
     periodLevels <- unique(data$Period)
   }
-  data[, `:=`(Period, factor(Period, levels = periodLevels))]
   if (mode == "lines") {
     type <- "scatter"
   }
   else if (mode == "bar") {
+    data[, `:=`(Period, factor(Period, levels = periodLevels))]
     type <- NULL
   }
   lensValues <- sort(unique(data$lens))
