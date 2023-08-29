@@ -4,7 +4,11 @@
 \alias{throughputChart}
 \title{Wrapper function for throughput plotly charts using Reynold's standard}
 \usage{
-throughputChart(throughputBars, semesterLineLocations = NULL)
+throughputChart(
+  throughputBars,
+  semesterLineLocations = NULL,
+  sourceName = NULL
+)
 }
 \arguments{
 \item{throughputBars}{should be a data table with the column}

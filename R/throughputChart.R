@@ -33,12 +33,13 @@
 #' # While hardcoded here, it is best if you use the level numbers for the periods based chieR::dateMapping(), and subtract 1.5.
 #' semesterLine <- 5.5
 #' throughputChart(data, semesterLineLocations = semesterLine)
-throughputChart <- function(throughputBars, semesterLineLocations = NULL){
+throughputChart <- function(throughputBars, semesterLineLocations = NULL, sourceName = NULL){
   plot <- chieR::plotlyChartWrapper(data          = throughputBars,
                                     mode          = "bar",
                                     barmode       = "relative",
                                     showBarTotals = TRUE,
-                                    totalsBySign  = TRUE)
+                                    totalsBySign  = TRUE,
+                                    sourceName    = sourceName)
   if(!is.null(semesterLineLocations)){
     plot <- plot %>%
       layout(shapes = lapply(semesterLineLocations, chieR::vline))

@@ -5,7 +5,7 @@
 #' @keywords filters
 #' @export
 #' @examples
-throughputStandard <- function(input, output, session, throughputData, keyword,
+throughputStandard2 <- function(input, output, session, throughputData, keyword,
                                boxTitle                        = "Throughput",
                                showTable                       = FALSE,
                                addlTableColumns                = NULL,
@@ -220,7 +220,8 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
 
   output[[paste0(keyword, "Plot")]] <- renderPlotly({
     chieR::throughputChart(throughputBars        = melt(copy(throughputDateFilter()), c("Period", "lens"))[variable %in% c("Incoming", "Outgoing")],
-                           semesterLineLocations = NULL)
+                           semesterLineLocations = NULL,
+                           sourceName            = paste0(keyword, "Plot"))
   })
 
   throughput            <- reactiveValues()
@@ -233,9 +234,10 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
 
   # If user clicks, filter more as appropriate
   observeEvent(event_data("plotly_click", source = paste0(keyword, "Plot")), {
+    browser()
     shiny::req(throughputWithPeriod())
     throughput$clickTable <- TRUE
-    clickInfo          <- event_data("plotly_click", source = paste0(keyword, "Plot"))
+    clickInfo             <- event_data("plotly_click", source = paste0(keyword, "Plot"))
     throughput$tableData  <- copy(throughputWithPeriod())[Period %in% clickInfo$x]
   })
 
