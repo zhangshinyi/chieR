@@ -11,6 +11,8 @@ burndownStandard(
   burndownData,
   keyword,
   boxTitle = "Burndown",
+  showTable = FALSE,
+  addlTableColumns = NULL,
   burndownActionButtonGroupList = NULL,
   actionButtonInputFunction = NULL,
   filterDefaultSelectedValues = NULL,

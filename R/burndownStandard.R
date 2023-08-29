@@ -9,6 +9,7 @@ burndownStandard <- function(input, output, session, burndownData,
                              keyword,
                              boxTitle                      = "Burndown",
                              showTable                     = FALSE,
+                             addlTableColumns              = NULL,
                              burndownActionButtonGroupList = NULL,
                              actionButtonInputFunction     = NULL,
                              filterDefaultSelectedValues   = NULL,
@@ -211,5 +212,44 @@ burndownStandard <- function(input, output, session, burndownData,
                burndownDateFilter()$backlog)
     chieR::burndownChart(burndownBars = melt(copy(burndownDateFilter()$inOut), c("Period", "lens"))[variable %in% c("Incoming", "Outgoing")],
                          backlogLine  = copy(burndownDateFilter()$backlog))
+  })
+
+  burndown            <- reactiveValues()
+  burndown$clickTable <- FALSE
+
+  burndownWithPeriod <- reactive({
+    shiny::req(burndownFiltered(), burndownPeriodMapping())
+    merge(copy(burndownFiltered()), burndownPeriodMapping(), by = "Date", all.x = TRUE)
+  })
+
+  # If user clicks, filter more as appropriate
+  observeEvent(event_data("plotly_click", source = paste0(keyword, "Plot")), {
+    shiny::req(burndownWithPeriod())
+    burndown$clickTable <- TRUE
+    clickInfo          <- event_data("plotly_click", source = paste0(keyword, "Plot"))
+    burndown$tableData  <- copy(burndownWithPeriod())[Period %in% clickInfo$x]
+  })
+
+  # If user clicks, filter more as appropriate
+  observeEvent(input[[paste0("reset", keyword, "Input")]], {
+    burndown$clickTable <- FALSE
+  })
+
+  output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+    shiny::req(burndownWithPeriod(), nrow(burndownWithPeriod()) > 0,
+               is.logical(burndown$clickTable))
+
+    if(!burndown$clickTable){
+      tableData <- copy(burndownWithPeriod())
+    } else {
+      tableData <- copy(burndown$tableData)
+    }
+
+    tableData <- tableData[, c("Date", addlTableColumns, burndownData$filterCols), with = FALSE]
+
+    DT::datatable(copy(tableData),
+                  options = list(lengthMenu = c(20, 50),
+                                 scrollX    = TRUE,
+                                 server     = TRUE))
   })
 }

@@ -8,6 +8,7 @@
 throughputStandard <- function(input, output, session, throughputData, keyword,
                                boxTitle                        = "Throughput",
                                showTable                       = FALSE,
+                               addlTableColumns                = NULL,
                                throughputActionButtonGroupList = NULL,
                                actionButtonInputFunction       = NULL,
                                cumulateBySemester              = TRUE,
@@ -220,5 +221,44 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
   output[[paste0(keyword, "Plot")]] <- renderPlotly({
     chieR::throughputChart(throughputBars        = melt(copy(throughputDateFilter()), c("Period", "lens"))[variable %in% c("Incoming", "Outgoing")],
                            semesterLineLocations = NULL)
+  })
+
+  throughput            <- reactiveValues()
+  throughput$clickTable <- FALSE
+
+  throughputWithPeriod <- reactive({
+    shiny::req(throughputFiltered(), throughputPeriodDateMapping())
+    merge(copy(throughputFiltered()), throughputPeriodDateMapping(), by = "Date", all.x = TRUE)
+  })
+
+  # If user clicks, filter more as appropriate
+  observeEvent(event_data("plotly_click", source = paste0(keyword, "Plot")), {
+    shiny::req(throughputWithPeriod())
+    throughput$clickTable <- TRUE
+    clickInfo          <- event_data("plotly_click", source = paste0(keyword, "Plot"))
+    throughput$tableData  <- copy(throughputWithPeriod())[Period %in% clickInfo$x]
+  })
+
+  # If user clicks, filter more as appropriate
+  observeEvent(input[[paste0("reset", keyword, "Input")]], {
+    throughput$clickTable <- FALSE
+  })
+
+  output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+    shiny::req(throughputWithPeriod(), nrow(throughputWithPeriod()) > 0,
+               is.logical(throughput$clickTable))
+
+    if(!throughput$clickTable){
+      tableData <- copy(throughputWithPeriod())
+    } else {
+      tableData <- copy(throughput$tableData)
+    }
+
+    tableData <- tableData[, c("Date", addlTableColumns, throughputData$filterCols), with = FALSE]
+
+    DT::datatable(copy(tableData),
+                  options = list(lengthMenu = c(20, 50),
+                                 scrollX    = TRUE,
+                                 server     = TRUE))
   })
 }

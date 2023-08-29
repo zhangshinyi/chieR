@@ -11,6 +11,8 @@ throughputStandard(
   throughputData,
   keyword,
   boxTitle = "Throughput",
+  showTable = FALSE,
+  addlTableColumns = NULL,
   throughputActionButtonGroupList = NULL,
   actionButtonInputFunction = NULL,
   cumulateBySemester = TRUE,
