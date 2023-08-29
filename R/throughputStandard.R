@@ -5,7 +5,7 @@
 #' @keywords filters
 #' @export
 #' @examples
-throughputStandard2 <- function(input, output, session, throughputData, keyword,
+throughputStandard <- function(input, output, session, throughputData, keyword,
                                boxTitle                        = "Throughput",
                                showTable                       = FALSE,
                                addlTableColumns                = NULL,
