@@ -77,7 +77,7 @@ burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizo
     layout(margin     = list(l = 0),
            showlegend = TRUE)
   if(is.null(horizontalLegend)){
-    horizontalLegend <- ifelse(numLensVals < 8, TRUE, FALSE)
+    horizontalLegend <- ifelse(length(lensValues) < 8, TRUE, FALSE)
   }
   chieR::plotlyLayout(plot, legendHeight = legendHeight, horizontalLegend = horizontalLegend)
 }
