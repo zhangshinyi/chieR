@@ -9,7 +9,8 @@ burndownChart(
   backlogLine,
   legendHeight = 1.05,
   horizontalLegend = NULL,
-  sourceName = NULL
+  sourceName = NULL,
+  colorPalette = "Standard"
 )
 }
 \arguments{

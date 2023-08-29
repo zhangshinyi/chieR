@@ -27,8 +27,7 @@
 #' totalLine  <- data[, .(Backlog = priorQueue + sum(value)), by = .(Period)]
 #' burndownChart(burndownBars  = data,
 #'               backlogLine  = totalLine)
-burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL, sourceName = NULL){
-
+burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL, sourceName = NULL, colorPalette = "Standard"){
   if(!is.factor(burndownBars$lens)){
     burndownBars <- copy(burndownBars)[, lens := factor(lens, levels = sort(unique(lens)))]
   }
@@ -37,13 +36,22 @@ burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizo
   barTotals <- barTotals[, .(value = sum(value)), by = .(Period, sign)]
   barTotals[, `:=`(text, format(round(value, 0), nsmall = 0, big.mark = ","))]
 
-  numLensVals <- length(unique(burndownBars$lens))
+  lensValues <- sort(unique(burndownBars$lens))
+  lensColors <- chieR::getColors(colorPalette)
+  if(length(lensValues) <= length(lensColors)){
+    lensColors <- lensColors[1:length(lensValues)]
+  } else {
+    lensColors <- lensColors[!lensColors %in% c("#2F2F2F", "#505050", "#737373", "#D2D2D2", "#E6E6E6", "#F2F2F2")]
+    lensColors <- c(lensColors, gray.colors(length(lensValues) - length(lensColors)))
+  }
+
+  names(lensColors) <- lensValues
 
   plot <- plot_ly(source = sourceName) %>%
     add_bars(x      = ~burndownBars$Period,
              y      = ~burndownBars$value,
              color  = ~burndownBars$lens,
-             colors = chieR::getColors()[1:numLensVals])  %>%
+             colors = lensColors) %>%
     layout(barmode = "relative",
            xaxis   = list(title     = "",
                           tickangle = 320),
@@ -73,3 +81,4 @@ burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizo
   }
   chieR::plotlyLayout(plot, legendHeight = legendHeight, horizontalLegend = horizontalLegend)
 }
+
