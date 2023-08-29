@@ -273,7 +273,6 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
       }
 
       shiny::req(nrow(data) > 0)
-
       data <- data[, c("Date", addlTableColumns, trendData$filterCols), with = FALSE]
 
       # Server or client side processing:

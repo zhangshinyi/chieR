@@ -8,6 +8,7 @@
 burndownStandard <- function(input, output, session, burndownData,
                              keyword,
                              boxTitle                      = "Burndown",
+                             showTable                     = FALSE,
                              burndownActionButtonGroupList = NULL,
                              actionButtonInputFunction     = NULL,
                              filterDefaultSelectedValues   = NULL,
@@ -31,6 +32,12 @@ burndownStandard <- function(input, output, session, burndownData,
   })
 
   output[[paste0(keyword, "UI")]] <- renderUI({
+    shiny::req(is.logical(showTable))
+    if(showTable){
+      tableOutput <- DT::dataTableOutput(paste0(keyword, "Table"))
+    } else {
+      tableOutput <- NULL
+    }
     if(!is.null(burndownActionButtonGroupList)){
       burndownActionButtonGroup <- radioGroupButtons(inputId  = burndownActionButtonGroupList$inputId,
                                                      label    = NULL,
@@ -57,6 +64,7 @@ burndownStandard <- function(input, output, session, burndownData,
                       burndownActionButtonGroup,
                       plotlyOutput(paste0(keyword, "Plot"),
                                    height = "590px"),
+                      tableOutput,
                       align = "center")
            )))
   })

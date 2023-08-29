@@ -7,6 +7,7 @@
 #' @examples
 throughputStandard <- function(input, output, session, throughputData, keyword,
                                boxTitle                        = "Throughput",
+                               showTable                       = FALSE,
                                throughputActionButtonGroupList = NULL,
                                actionButtonInputFunction       = NULL,
                                cumulateBySemester              = TRUE,
@@ -23,6 +24,12 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
   })
 
   output[[paste0(keyword, "UI")]] <- renderUI({
+    shiny::req(is.logical(showTable))
+    if(showTable){
+      tableOutput <- DT::dataTableOutput(paste0(keyword, "Table"))
+    } else {
+      tableOutput <- NULL
+    }
     if(!is.null(throughputActionButtonGroupList)){
       throughputActionButtonGroup <- radioGroupButtons(inputId  = throughputActionButtonGroupList$inputId,
                                                        label    = NULL,
@@ -49,6 +56,7 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
                       throughputActionButtonGroup,
                       plotlyOutput(paste0(keyword, "Plot"),
                                    height = "590px"),
+                      tableOutput,
                       align = "center")
            )))
   })

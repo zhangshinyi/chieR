@@ -10,7 +10,9 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
                             boxTitle                     = "Agility",
                             agilityActionButtonGroupList = NULL,
                             actionButtonInputFunction    = NULL,
-                            filterDefaultSelectedValues  = NULL){
+                            filterDefaultSelectedValues  = NULL,
+                            showTable                    = FALSE,
+                            addlTableColumns             = NULL){
 
   agilityWithActionButtonFilter <- reactive({
     if(!is.null(actionButtonInputFunction) & !is.null(agilityActionButtonGroupList)){
@@ -96,6 +98,12 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
   })
 
   output[[paste0(keyword, "UI")]] <- renderUI({
+    shiny::req(is.logical(showTable))
+    if(showTable){
+      tableOutput <- DT::dataTableOutput(paste0(keyword, "Table"))
+    } else {
+      tableOutput <- NULL
+    }
     if(!is.null(agilityActionButtonGroupList)){
       agilityActionButtonGroup <- radioGroupButtons(inputId  = agilityActionButtonGroupList$inputId,
                                                     label    = NULL,
@@ -112,20 +120,17 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
                                     "Refresh settings",
                                     placement = "top"))),
                   column(width = 12,
-                         uiOutput(paste0("resetable", keyword, "Input")))
-    ),
-    fluidRow(
-      column(width = 12,
-             box(width       = NULL,
-                 title       = boxTitle,
-                 status      = "primary",
-                 solidHeader = TRUE,
-                 agilityActionButtonGroup,
-                 plotlyOutput(paste0(keyword, "Plot"),
-                              height = "590px"),
-                 # reactableOutput("agilityTable"),
-                 align = "center")
-      )))
+                         uiOutput(paste0("resetable", keyword, "Input")))),
+         fluidRow(column(width = 12,
+                         box(width       = NULL,
+                             title       = boxTitle,
+                             status      = "primary",
+                             solidHeader = TRUE,
+                             agilityActionButtonGroup,
+                             plotlyOutput(paste0(keyword, "Plot"),
+                                          height = "590px"),
+                             tableOutput,
+                             align = "center"))))
   })
 
   ###################################################################################### Calcs
@@ -208,7 +213,7 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
     agility$clickTable <- FALSE
   })
 
-  output[[paste0(keyword, "Table")]] <- renderReactable({
+  output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
     shiny::req(agilityWithPeriod(), nrow(agilityWithPeriod()) > 0,
                is.logical(agility$clickTable))
 
@@ -218,47 +223,30 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
       tableData <- copy(agility$tableData)
     }
 
-    # Add HTML for URL
-    tableData[, Id := paste0('<a href="', Url, '" target="_blank" rel="noopener noreferrer">', Id,'</a>')]
+    tableData <- tableData[, c("Date", addlTableColumns, agilityData$filterCols), with = FALSE]
 
-    tableData <- tableData[, c("Id",
-                               "Start Date",
-                               "End Date",
-                               "Title",
-                               "DevModel",
-                               "Severity",
-                               "Scenario",
-                               "ClusterSize",
-                               "value",
-                               "SLA"), with = FALSE]
-    setnames(tableData,
-             c("ClusterSize",  "DevModel",  "value"),
-             c("Cluster Size", "Dev Model", "Duration"))
-
-    tableData <- tableData[!is.na(Duration)]
-
-    tableData[, `SLA Met` := ifelse(Duration <= SLA, "Yes", "No")]
-
-    setkey(tableData, Id)
-
-    reactable(tableData,
-              defaultColDef   = colDef(vAlign      = "center",
-                                       header      = function(value){ gsub(".", " ", value, fixed = TRUE) },
-                                       cell        = function(value){ format(value, nsmall = 0) },
-                                       align       = "center",
-                                       html        = TRUE,
-                                       minWidth    = 20,
-                                       headerStyle = list(background = "#f7f7f8")),
-              columns         = list(`Title`   = colDef(width = 500),
-                                     `SLA Met` = colDef(
-                                       cell = function(value) {
-                                         if(value  == "No") shiny::icon("times-circle", class = "fas",
-                                                                        style = "color: #D83B01") else shiny::icon("check-circle", class = "fas",
-                                                                                                                   style = "color: #107C10")
-                                       }
-                                     )),
-              striped         = TRUE,
-              bordered        = TRUE,
-              highlight       = TRUE)
+    # reactable(tableData,
+    #           defaultColDef   = colDef(vAlign      = "center",
+    #                                    header      = function(value){ gsub(".", " ", value, fixed = TRUE) },
+    #                                    cell        = function(value){ format(value, nsmall = 0) },
+    #                                    align       = "center",
+    #                                    html        = TRUE,
+    #                                    minWidth    = 20,
+    #                                    headerStyle = list(background = "#f7f7f8")),
+    #           # columns         = list(`Title`   = colDef(width = 500),
+    #           #                        `SLA Met` = colDef(
+    #           #                          cell = function(value) {
+    #           #                            if(value  == "No") shiny::icon("times-circle", class = "fas",
+    #           #                                                           style = "color: #D83B01") else shiny::icon("check-circle", class = "fas",
+    #           #                                                                                                      style = "color: #107C10")
+    #           #                          }
+    #           #                        )),
+    #           striped         = TRUE,
+    #           bordered        = TRUE,
+    #           highlight       = TRUE)
+    DT::datatable(copy(tableData),
+                  options = list(lengthMenu = c(20, 50),
+                                 scrollX    = TRUE,
+                                 server     = TRUE))
   })
 }
