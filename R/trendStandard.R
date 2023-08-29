@@ -5,7 +5,7 @@
 #' @keywords filters
 #' @export
 #' @examples
-trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, timeIntervalChoices = c("Day", "Week", "Month"), defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE, averageByPeriod = FALSE){
+trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, timeIntervalChoices = c("Day", "Week", "Month"), defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE, averageByPeriod = FALSE, normalizeBynRow = FALSE){
   trend <- reactiveValues()
 
   filterCols <- reactive({
@@ -125,11 +125,10 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
                              all.x = TRUE)[, Count := (Count / numDays)][, numDays := NULL]
     }
 
-
     if(input[[paste0(keyword, "Lens")]] != "None"){
-      data <- data[, .(Count = sum(Count)), by = c("Period", input[[paste0(keyword, "Lens")]])]
+      data <- data[, .(Count = sum(Count), nRows = length(Count)), by = c("Period", input[[paste0(keyword, "Lens")]])]
     } else {
-      data <- data[, .(Count = sum(Count)), by = c("Period")][, None := "None"]
+      data <- data[, .(Count = sum(Count), nRows = length(Count)), by = c("Period")][, None := "None"]
     }
 
     setnames(data, input[[paste0(keyword, "Lens")]], "lens")
@@ -149,7 +148,14 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
                                                      lens   = unique(data$lens)))
     data <- merge(periodLensCross, data, by = c("Period", "lens"), all.x = TRUE)
     data[is.na(Count), Count := 0]
+    data[is.na(nRows), nRows := 0]
     setkey(data, Period, lens)
+
+    if(normalizeBynRow){
+      data[, Count := fifelse(nRows == 0, 0, 100 * Count / nRows)]
+    }
+
+    data[, nRows := NULL]
 
     return(data)
   })

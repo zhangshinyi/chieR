@@ -16,7 +16,8 @@ trendStandard(
   defaultTimeInterval = "Month",
   addlTableColumns = NULL,
   showTable = FALSE,
-  averageByPeriod = FALSE
+  averageByPeriod = FALSE,
+  normalizeBynRow = FALSE
 )
 }
 \arguments{
