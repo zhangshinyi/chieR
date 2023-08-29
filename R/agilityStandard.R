@@ -9,7 +9,8 @@
 agilityStandard <- function(input, output, session, agilityData, keyword,
                             boxTitle                     = "Agility",
                             agilityActionButtonGroupList = NULL,
-                            actionButtonInputFunction    = NULL){
+                            actionButtonInputFunction    = NULL,
+                            filterDefaultSelectedValues  = NULL){
 
   agilityWithActionButtonFilter <- reactive({
     if(!is.null(actionButtonInputFunction) & !is.null(agilityActionButtonGroupList)){
@@ -51,10 +52,19 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
     shiny::req(agilityWithActionButtonFilter(), filterCols())
     filterWidgets <- mapply(function(csvColName, inputName){
       inputChoices <- as.character(sort(unique(agilityWithActionButtonFilter()[[csvColName]])))
+      if(!is.null(filterDefaultSelectedValues)){
+        if(csvColName %in% names(filterDefaultSelectedValues)){
+          selectedChoices <- filterDefaultSelectedValues[[csvColName]]
+        } else {
+          selectedChoices <- inputChoices
+        }
+      } else {
+        selectedChoices <- inputChoices
+      }
       column(width = 2,
              pickerInput(inputName,
                          csvColName,
-                         selected = inputChoices,
+                         selected = selectedChoices,
                          choices  = inputChoices,
                          options  = list(`actions-box`          = TRUE,
                                          `live-search`          = TRUE,

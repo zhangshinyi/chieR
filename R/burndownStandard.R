@@ -6,10 +6,12 @@
 #' @export
 #' @examples
 burndownStandard <- function(input, output, session, burndownData,
-                                 keyword,
-                                 boxTitle                      = "Burndown",
-                                 burndownActionButtonGroupList = NULL,
-                                 actionButtonInputFunction     = NULL){
+                             keyword,
+                             boxTitle                      = "Burndown",
+                             burndownActionButtonGroupList = NULL,
+                             actionButtonInputFunction     = NULL,
+                             filterDefaultSelectedValues   = NULL,
+                             defaultLens                   = "None"){
 
   burndownWithActionButtonFilter <- reactive({
     if(!is.null(actionButtonInputFunction) & !is.null(burndownActionButtonGroupList)){
@@ -80,10 +82,20 @@ burndownStandard <- function(input, output, session, burndownData,
     shiny::req(burndownWithActionButtonFilter(), filterCols())
     filterWidgets <- mapply(function(csvColName, inputName){
       inputChoices <- as.character(sort(unique(burndownWithActionButtonFilter()[[csvColName]])))
+      if(!is.null(filterDefaultSelectedValues)){
+        if(csvColName %in% names(filterDefaultSelectedValues)){
+          selectedChoices <- filterDefaultSelectedValues[[csvColName]]
+        } else {
+          selectedChoices <- inputChoices
+        }
+      } else {
+        selectedChoices <- inputChoices
+      }
+
       column(width = 2,
              pickerInput(inputName,
                          csvColName,
-                         selected = inputChoices,
+                         selected = selectedChoices,
                          choices  = inputChoices,
                          options  = list(`actions-box`          = TRUE,
                                          `live-search`          = TRUE,
@@ -107,7 +119,7 @@ burndownStandard <- function(input, output, session, burndownData,
                                 pickerInput(paste0(keyword, "Lens"),
                                             label    = "Lens",
                                             choices  = c("None", burndownData$filterCols),
-                                            selected = "None",
+                                            selected = defaultLens,
                                             multiple = FALSE)))
 
     div(id = paste0(keyword, input[[paste0("reset", keyword, "Input")]]),

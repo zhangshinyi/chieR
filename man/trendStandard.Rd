@@ -17,7 +17,9 @@ trendStandard(
   addlTableColumns = NULL,
   showTable = FALSE,
   averageByPeriod = FALSE,
-  normalizeBynRow = FALSE
+  normalizeBynRow = FALSE,
+  filterDefaultSelectedValues = NULL,
+  defaultLens = "None"
 )
 }
 \arguments{

@@ -5,7 +5,16 @@
 #' @keywords filters
 #' @export
 #' @examples
-trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, timeIntervalChoices = c("Day", "Week", "Month"), defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE, averageByPeriod = FALSE, normalizeBynRow = FALSE){
+trendStandard <- function(input, output, session, trendData, keyword, title,
+                          percentTF                   = FALSE,
+                          timeIntervalChoices         = c("Day", "Week", "Month"),
+                          defaultTimeInterval         = "Month",
+                          addlTableColumns            = NULL,
+                          showTable                   = FALSE,
+                          averageByPeriod             = FALSE,
+                          normalizeBynRow             = FALSE,
+                          filterDefaultSelectedValues = NULL,
+                          defaultLens                 = "None"){
   trend <- reactiveValues()
 
   filterCols <- reactive({
@@ -39,10 +48,21 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
 
     filterWidgets <- mapply(function(csvColName, inputName){
       inputChoices <- as.character(sort(unique(trendData$data[[csvColName]])))
+
+      if(!is.null(filterDefaultSelectedValues)){
+        if(csvColName %in% names(filterDefaultSelectedValues)){
+          selectedChoices <- filterDefaultSelectedValues[[csvColName]]
+        } else {
+          selectedChoices <- inputChoices
+        }
+      } else {
+        selectedChoices <- inputChoices
+      }
+
       column(width = 2,
              pickerInput(inputName,
                          csvColName,
-                         selected = inputChoices,
+                         selected = selectedChoices,
                          choices  = inputChoices,
                          options  = list(`actions-box`          = TRUE,
                                          `live-search`          = TRUE,
@@ -66,7 +86,7 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
                                 pickerInput(paste0(keyword, "Lens"),
                                             label    = "Lens",
                                             choices  = c("None", trendData$filterCols),
-                                            selected = "None",
+                                            selected = defaultLens,
                                             multiple = FALSE)))
 
     div(id = paste0("redline", input[[paste0("reset", keyword, "Input")]]),

@@ -6,10 +6,12 @@
 #' @export
 #' @examples
 throughputStandard <- function(input, output, session, throughputData, keyword,
-                                   boxTitle                        = "Throughput",
-                                   throughputActionButtonGroupList = NULL,
-                                   actionButtonInputFunction       = NULL,
-                                   cumulateBySemester              = TRUE){
+                               boxTitle                        = "Throughput",
+                               throughputActionButtonGroupList = NULL,
+                               actionButtonInputFunction       = NULL,
+                               cumulateBySemester              = TRUE,
+                               filterDefaultSelectedValues     = NULL,
+                               defaultLens                     = "None"){
   throughputWithActionButtonFilter <- reactive({
     if(!is.null(actionButtonInputFunction) & !is.null(throughputActionButtonGroupList)){
       data <- actionButtonInputFunction(dataList   = throughputData,
@@ -79,10 +81,19 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
     shiny::req(throughputWithActionButtonFilter(), filterCols())
     filterWidgets <- mapply(function(csvColName, inputName){
       inputChoices <- as.character(sort(unique(throughputWithActionButtonFilter()[[csvColName]])))
+      if(!is.null(filterDefaultSelectedValues)){
+        if(csvColName %in% names(filterDefaultSelectedValues)){
+          selectedChoices <- filterDefaultSelectedValues[[csvColName]]
+        } else {
+          selectedChoices <- inputChoices
+        }
+      } else {
+        selectedChoices <- inputChoices
+      }
       column(width = 2,
              pickerInput(inputName,
                          csvColName,
-                         selected = inputChoices,
+                         selected = selectedChoices,
                          choices  = inputChoices,
                          options  = list(`actions-box`          = TRUE,
                                          `live-search`          = TRUE,
@@ -106,7 +117,7 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
                                 pickerInput(paste0(keyword, "Lens"),
                                             label    = "Lens",
                                             choices  = c("None", throughputData$filterCols),
-                                            selected = "None",
+                                            selected = defaultLens,
                                             multiple = FALSE)))
 
     div(id = paste0(keyword, input[[paste0("reset", keyword, "Input")]]),

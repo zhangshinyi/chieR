@@ -12,7 +12,9 @@ burndownStandard(
   keyword,
   boxTitle = "Burndown",
   burndownActionButtonGroupList = NULL,
-  actionButtonInputFunction = NULL
+  actionButtonInputFunction = NULL,
+  filterDefaultSelectedValues = NULL,
+  defaultLens = "None"
 )
 }
 \arguments{

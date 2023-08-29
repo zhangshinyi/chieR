@@ -13,7 +13,9 @@ throughputStandard(
   boxTitle = "Throughput",
   throughputActionButtonGroupList = NULL,
   actionButtonInputFunction = NULL,
-  cumulateBySemester = TRUE
+  cumulateBySemester = TRUE,
+  filterDefaultSelectedValues = NULL,
+  defaultLens = "None"
 )
 }
 \arguments{

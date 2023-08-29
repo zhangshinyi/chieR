@@ -12,7 +12,8 @@ agilityStandard(
   keyword,
   boxTitle = "Agility",
   agilityActionButtonGroupList = NULL,
-  actionButtonInputFunction = NULL
+  actionButtonInputFunction = NULL,
+  filterDefaultSelectedValues = NULL
 )
 }
 \arguments{
