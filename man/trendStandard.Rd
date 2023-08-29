@@ -12,6 +12,7 @@ trendStandard(
   keyword,
   title,
   percentTF = FALSE,
+  timeIntervalChoices = c("Day", "Week", "Month"),
   defaultTimeInterval = "Month",
   addlTableColumns = NULL,
   showTable = FALSE,

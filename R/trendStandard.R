@@ -5,7 +5,7 @@
 #' @keywords filters
 #' @export
 #' @examples
-trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE, averageByPeriod = FALSE){
+trendStandard <- function(input, output, session, trendData, keyword, title, percentTF = FALSE, timeIntervalChoices = c("Day", "Week", "Month"), defaultTimeInterval = "Month", addlTableColumns = NULL, showTable = FALSE, averageByPeriod = FALSE){
   trend <- reactiveValues()
 
   filterCols <- reactive({
@@ -57,7 +57,7 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
     fixedWidgets <- list(column(width = 2,
                                 pickerInput(paste0(keyword, "TimeInterval"),
                                             label    = "Time Interval",
-                                            choices  = c("Day", "Week", "Month"),
+                                            choices  = timeIntervalChoices,
                                             selected = defaultTimeInterval,
                                             multiple = FALSE)),
                          column(width = 2,
