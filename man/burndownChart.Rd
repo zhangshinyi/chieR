@@ -8,7 +8,8 @@ burndownChart(
   burndownBars,
   backlogLine,
   legendHeight = 1.05,
-  horizontalLegend = NULL
+  horizontalLegend = NULL,
+  sourceName = NULL
 )
 }
 \arguments{

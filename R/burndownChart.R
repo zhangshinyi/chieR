@@ -27,7 +27,7 @@
 #' totalLine  <- data[, .(Backlog = priorQueue + sum(value)), by = .(Period)]
 #' burndownChart(burndownBars  = data,
 #'               backlogLine  = totalLine)
-burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL){
+burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL, sourceName = NULL){
 
   if(!is.factor(burndownBars$lens)){
     burndownBars <- copy(burndownBars)[, lens := factor(lens, levels = sort(unique(lens)))]
@@ -39,7 +39,7 @@ burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizo
 
   numLensVals <- length(unique(burndownBars$lens))
 
-  plot <- plot_ly() %>%
+  plot <- plot_ly(source = sourceName) %>%
     add_bars(x      = ~burndownBars$Period,
              y      = ~burndownBars$value,
              color  = ~burndownBars$lens,

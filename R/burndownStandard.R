@@ -211,7 +211,8 @@ burndownStandard <- function(input, output, session, burndownData,
     shiny::req(burndownDateFilter()$inOut, nrow(burndownDateFilter()$inOut) > 0,
                burndownDateFilter()$backlog)
     chieR::burndownChart(burndownBars = melt(copy(burndownDateFilter()$inOut), c("Period", "lens"))[variable %in% c("Incoming", "Outgoing")],
-                         backlogLine  = copy(burndownDateFilter()$backlog))
+                         backlogLine  = copy(burndownDateFilter()$backlog),
+                         sourceName   = paste0(keyword, "Plot"))
   })
 
   burndown            <- reactiveValues()
