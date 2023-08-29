@@ -234,7 +234,6 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
 
   # If user clicks, filter more as appropriate
   observeEvent(event_data("plotly_click", source = paste0(keyword, "Plot")), {
-    browser()
     shiny::req(throughputWithPeriod())
     throughput$clickTable <- TRUE
     clickInfo             <- event_data("plotly_click", source = paste0(keyword, "Plot"))
