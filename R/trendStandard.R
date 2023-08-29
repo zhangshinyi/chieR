@@ -126,9 +126,11 @@ trendStandard <- function(input, output, session, trendData, keyword, title, per
     }
 
     if(input[[paste0(keyword, "Lens")]] != "None"){
-      data <- data[, .(Count = sum(Count), nRows = length(Count)), by = c("Period", input[[paste0(keyword, "Lens")]])]
+      rowCount <- data[, .(nRows = length(Count)), by = Period]
+      data     <- data[, .(Count = sum(Count)), by = c("Period", input[[paste0(keyword, "Lens")]])]
+      data     <- merge(data, rowCount, by = "Period")
     } else {
-      data <- data[, .(Count = sum(Count), nRows = length(Count)), by = c("Period")][, None := "None"]
+      data <- data[, .(Count = sum(Count), nRows = length(Count)), by = Period][, None := "None"]
     }
 
     setnames(data, input[[paste0(keyword, "Lens")]], "lens")
