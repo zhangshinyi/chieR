@@ -72,7 +72,7 @@ plotlyChartWrapper <- function(data,
     lensColors <- c(lensColors, gray.colors(length(lensValues) - length(lensColors)))
   }
 
-  if(colorPalette != "Standard"){
+  if(colorPalette == "Standard"){
     names(lensColors) <- lensValues
   }
 
