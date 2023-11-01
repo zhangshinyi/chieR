@@ -72,7 +72,9 @@ plotlyChartWrapper <- function(data,
     lensColors <- c(lensColors, gray.colors(length(lensValues) - length(lensColors)))
   }
 
-  names(lensColors) <- lensValues
+  if(colorPalette != "Standard"){
+    names(lensColors) <- lensValues
+  }
 
   output <- plot_ly(data, x = ~Period, y = ~value, color = ~lens, source = sourceName,
                     colors = lensColors, type = type, mode = mode) %>% plotly::layout(barmode = barmode,
