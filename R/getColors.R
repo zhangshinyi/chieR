@@ -6,7 +6,7 @@
 #' @examples
 #' getColors()
 getColors <- function(type = "Standard"){
-  if(!type %in% c("Standard", "Gen", "HW Bucket", "Capability Gap", "Processor")){
+  if(!type %in% c("Standard", "Gen", "HW Bucket", "Capability Gap", "Processor", "State")){
     stop("Invalid input for type")
   }
   colors <- switch(type,
@@ -29,6 +29,11 @@ getColors <- function(type = "Standard"){
                    "Processor" = c("Intel" = "#243A5E",
                                    "AMD"   = "#0078D4",
                                    "Other" = "#50E6FF"),
+                   "State" = c("New"    = "#D59DFF", # Light Purple
+                               "Active" = "#8661C5", # Purple
+                               "Closed" = "#0078D4", # Medium Blue
+                               "Waived" = "#243A5E", # Dark Blue
+                               "N/A"    = "#6A4B16"), # Brown
                    "HW Bucket" = c("Disk"           = "#243A5E",
                                    "Memory"         = "#0078D4",
                                    "CPU"            = "#50E6FF",
