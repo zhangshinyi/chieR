@@ -182,7 +182,7 @@ burndownStandard <- function(input, output, session, burndownData,
 
     data <- dcast(data, Period + lens ~ Type, value.var = "Count", fill = 0)
 
-    backlog <- copy(burndownDatePeriod())[, .(Backlog = sum(Count)), by = Period]#[, Backlog := cumsum(Backlog)]
+    backlog <- copy(burndownDatePeriod())[, .(Backlog = sum(Count)), by = Period][, Backlog := cumsum(Backlog)]
 
     list(inOut   = data,
          backlog = backlog)
