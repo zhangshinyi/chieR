@@ -71,9 +71,9 @@ burndownStandard <- function(input, output, session, burndownData,
   })
 
   output[[paste0("set", keyword, "DateRange")]] <- renderUI({
-    shiny::req(burndownWithActionButtonFilter(), burndownData$semesterDates)
+    shiny::req(burndownData$semesterDates)
 
-    minDate <- min(burndownWithActionButtonFilter()$Date)
+    minDate <- min(burndownData$semesterDates$Date)#min(burndownWithActionButtonFilter()$Date)
     maxDate <- max(burndownData$semesterDates$Date)
 
     semesterStartDate <- min(burndownData$semesterDates$Date)
@@ -88,9 +88,9 @@ burndownStandard <- function(input, output, session, burndownData,
   })
 
   output[[paste0("resetable", keyword, "Input")]] <- renderUI({
-    shiny::req(burndownWithActionButtonFilter(), filterCols())
+    shiny::req(burndownData$data, filterCols())
     filterWidgets <- mapply(function(csvColName, inputName){
-      inputChoices <- as.character(sort(unique(burndownWithActionButtonFilter()[[csvColName]])))
+      inputChoices <- as.character(sort(unique(burndownData$data[[csvColName]])))
       if(!is.null(filterDefaultSelectedValues)){
         if(csvColName %in% names(filterDefaultSelectedValues)){
           selectedChoices <- filterDefaultSelectedValues[[csvColName]]

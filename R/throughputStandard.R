@@ -70,9 +70,9 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
   })
 
   output[[paste0("set", keyword, "DateRange")]] <- renderUI({
-    shiny::req(throughputWithActionButtonFilter(), throughputData$semesterDates)
+    shiny::req(throughputData$semesterDates)
 
-    minDate <- min(throughputWithActionButtonFilter()$Date)
+    minDate <- min(throughputData$semesterDates$Date)#min(throughputWithActionButtonFilter()$Date)
     maxDate <- max(throughputData$semesterDates$Date)
 
     semesterStartDate <- min(throughputData$semesterDates$Date)
@@ -87,9 +87,9 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
   })
 
   output[[paste0("resetable", keyword, "Input")]] <- renderUI({
-    shiny::req(throughputWithActionButtonFilter(), filterCols())
+    shiny::req(throughputData$data, filterCols())
     filterWidgets <- mapply(function(csvColName, inputName){
-      inputChoices <- as.character(sort(unique(throughputWithActionButtonFilter()[[csvColName]])))
+      inputChoices <- as.character(sort(unique(throughputData$data[[csvColName]])))
       if(!is.null(filterDefaultSelectedValues)){
         if(csvColName %in% names(filterDefaultSelectedValues)){
           selectedChoices <- filterDefaultSelectedValues[[csvColName]]
