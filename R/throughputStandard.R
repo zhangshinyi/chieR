@@ -72,17 +72,17 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
   output[[paste0("set", keyword, "DateRange")]] <- renderUI({
     shiny::req(throughputData$semesterDates)
 
-    minDate <- min(throughputData$semesterDates$Date)#min(throughputWithActionButtonFilter()$Date)
+    # minDate <- min(throughputData$semesterDates$Date)#min(throughputWithActionButtonFilter()$Date)
     maxDate <- max(throughputData$semesterDates$Date)
 
     semesterStartDate <- min(throughputData$semesterDates$Date)
 
     dateRangeInput(paste0(keyword, "DateRange"),
                    label = "Date Range",
-                   min   = minDate,
-                   start = max(c(minDate, seq(semesterStartDate, length = 2, by = "-3 months")[2])),
+                   # min   = minDate,
+                   start = seq(semesterStartDate, length = 2, by = "-3 months")[2],
                    end   = maxDate,
-                   max   = maxDate,
+                   # max   = maxDate,
                    width = "100%")
   })
 

@@ -73,17 +73,17 @@ burndownStandard <- function(input, output, session, burndownData,
   output[[paste0("set", keyword, "DateRange")]] <- renderUI({
     shiny::req(burndownData$semesterDates)
 
-    minDate <- min(burndownData$semesterDates$Date)#min(burndownWithActionButtonFilter()$Date)
+    # minDate <- min(burndownData$semesterDates$Date)#min(burndownWithActionButtonFilter()$Date)
     maxDate <- max(burndownData$semesterDates$Date)
 
     semesterStartDate <- min(burndownData$semesterDates$Date)
 
     dateRangeInput(paste0(keyword, "DateRange"),
                    label = "Date Range",
-                   min   = minDate,
-                   start = max(c(minDate, seq(semesterStartDate, length = 2, by = "-3 months")[2])),
+                   # min   = minDate,
+                   start = seq(semesterStartDate, length = 2, by = "-3 months")[2],
                    end   = maxDate,
-                   max   = maxDate,
+                   # max   = maxDate,
                    width = "100%")
   })
 
