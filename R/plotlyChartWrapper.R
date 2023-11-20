@@ -65,14 +65,14 @@ plotlyChartWrapper <- function(data,
   }
   lensValues <- sort(unique(data$lens))
   lensColors <- chieR::getColors(colorPalette)
-  if(length(lensValues) <= length(lensColors)){
-    lensColors <- lensColors[1:length(lensValues)]
-  } else {
-    lensColors <- lensColors[!lensColors %in% c("#2F2F2F", "#505050", "#737373", "#D2D2D2", "#E6E6E6", "#F2F2F2")]
-    lensColors <- c(lensColors, gray.colors(length(lensValues) - length(lensColors)))
-  }
 
   if(colorPalette == "Standard"){
+    if(length(lensValues) <= length(lensColors)){
+      lensColors <- lensColors[1:length(lensValues)]
+    } else {
+      lensColors <- lensColors[!lensColors %in% c("#2F2F2F", "#505050", "#737373", "#D2D2D2", "#E6E6E6", "#F2F2F2")]
+      lensColors <- c(lensColors, gray.colors(length(lensValues) - length(lensColors)))
+    }
     names(lensColors) <- lensValues
   }
 
