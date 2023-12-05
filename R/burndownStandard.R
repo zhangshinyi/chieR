@@ -237,8 +237,12 @@ burndownStandard <- function(input, output, session, burndownData,
   })
 
   output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+
+    dateRange <- input[[paste0(keyword, "DateRange")]]
+
     shiny::req(burndownWithPeriod(), nrow(burndownWithPeriod()) > 0,
-               is.logical(burndown$clickTable))
+               is.logical(burndown$clickTable),
+               dateRange)
 
     if(!burndown$clickTable){
       tableData <- copy(burndownWithPeriod())
@@ -247,6 +251,9 @@ burndownStandard <- function(input, output, session, burndownData,
     }
 
     tableData <- tableData[, c("Date", addlTableColumns, burndownData$filterCols), with = FALSE]
+
+    # Filter table by date range
+    tableData <- tableData[(Date >= min(dateRange)) & (Date <= max(dateRange))]
 
     DT::datatable(copy(tableData),
                   options = list(lengthMenu = c(20, 50),
