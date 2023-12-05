@@ -264,7 +264,9 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
     })
 
     output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
-      shiny::req(trendDatePeriod())
+      dateRange <- input[[paste0(keyword, "DateRange")]]
+
+      shiny::req(trendDatePeriod(), dateRange)
 
       if(is.null(event_data("plotly_click", source = paste0(keyword, "Plot")))){
         data <- copy(trendDatePeriod())
@@ -274,6 +276,9 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
 
       shiny::req(nrow(data) > 0)
       data <- data[, c("Date", addlTableColumns, trendData$filterCols), with = FALSE]
+
+      # Filter table by date range
+      data <- data[(Date >= min(dateRange)) & (Date <= max(dateRange))]
 
       # Server or client side processing:
       # The server argument determines whether the data is processed on the server
