@@ -246,8 +246,12 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
   })
 
   output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+
+    dateRange <- input[[paste0(keyword, "DateRange")]]
+
     shiny::req(throughputWithPeriod(), nrow(throughputWithPeriod()) > 0,
-               is.logical(throughput$clickTable))
+               is.logical(throughput$clickTable),
+               dateRange)
 
     if(!throughput$clickTable){
       tableData <- copy(throughputWithPeriod())
@@ -256,6 +260,9 @@ throughputStandard <- function(input, output, session, throughputData, keyword,
     }
 
     tableData <- tableData[, c("Date", addlTableColumns, throughputData$filterCols), with = FALSE]
+
+    # Filter table by date range
+    tableData <- tableData[(Date >= min(dateRange)) & (Date <= max(dateRange))]
 
     DT::datatable(copy(tableData),
                   options = list(lengthMenu = c(20, 50),
