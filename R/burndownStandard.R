@@ -168,9 +168,8 @@ burndownStandard <- function(input, output, session, burndownData,
 
   burndownLensAggregated <- reactive({
     shiny::req(burndownDatePeriod(), nrow(burndownDatePeriod()) > 0,
-               input[[paste0(keyword, "Lens")]],
-               input[[paste0(keyword, "DateRange")]])
-    data <- copy(burndownDatePeriod())[(Date >= min(input[[paste0(keyword, "DateRange")]])) & (Date <= max(input[[paste0(keyword, "DateRange")]]))]
+               input[[paste0(keyword, "Lens")]])
+    data <- copy(burndownDatePeriod())
 
     if(input[[paste0(keyword, "Lens")]] != "None"){
       data <- data[, .(Count = sum(Count)), by = c("Period", "Type", input[[paste0(keyword, "Lens")]])]
