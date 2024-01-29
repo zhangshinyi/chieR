@@ -4,7 +4,7 @@
 \alias{dateMapping}
 \title{SQL query for day, week, month formatting from dim.Date}
 \usage{
-dateMapping(startDate, endDate, moadConn = NULL)
+dateMapping(startDate, endDate, moadConn = NULL, standard = "Reynold")
 }
 \arguments{
 \item{startDate}{should be a date of type character or Date in yyyy-mm-dd format}

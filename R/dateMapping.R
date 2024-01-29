@@ -7,7 +7,11 @@
 #' @examples
 #' chieR::dateMapping(startDate = as.Date("2023-01-01"), endDate = as.Date("2023-01-31"))
 #'
-dateMapping <- function(startDate, endDate, moadConn = NULL){
+dateMapping <- function(startDate, endDate, moadConn = NULL, standard = "Reynold"){
+  if(!standard %in% c("Reynold", "SiaaS")){
+    stop("Invalid input for standard")
+  }
+
   startDate <- tryCatch({
     as.Date(startDate)
   }, error = function(e){
@@ -25,16 +29,33 @@ dateMapping <- function(startDate, endDate, moadConn = NULL){
     moadConn <- chieR::sqlConnect(server = "chiemoadprd") #"chiemoaddev"
   }
 
-  dateQuery <- paste("SELECT Date, concat(outlookYear, ' ww', RIGHT('0' + CONVERT(VARCHAR(2), outlookWeek), 2)) as formattedWeek,",
-                     "concat('FY', right(fiscalYear,2), fiscalQuarterName) as formattedQuarter,",
-                     "concat(outlookYear, ' ww', RIGHT('0' + CONVERT(VARCHAR(2), outlookWeek), 2), '.', internationalDay) as formattedDay,",
-                     "element as Semester",
-                     "FROM dim.Date",
-                     "WHERE date >= '%s' and date <='%s'",
-                     "ORDER BY Date")
+  if(standard == "Reynold"){
+    dateQuery <- paste("SELECT Date, concat(outlookYear, ' ww', RIGHT('0' + CONVERT(VARCHAR(2), outlookWeek), 2)) as formattedWeek,",
+                       "concat('FY', right(fiscalYear,2), fiscalQuarterName) as formattedQuarter,",
+                       "concat(outlookYear, ' ww', RIGHT('0' + CONVERT(VARCHAR(2), outlookWeek), 2), '.', internationalDay) as formattedDay,",
+                       "element as Semester",
+                       "FROM dim.Date",
+                       "WHERE date >= '%s' and date <='%s'",
+                       "ORDER BY Date")
+  } else if(standard == "SiaaS"){
+    dateQuery <- paste("SELECT Date,",
+                       "concat('FY', right(fiscalYear,2), fiscalQuarterName) as formattedQuarter,",
+                       "element as Semester",
+                       "FROM dim.Date",
+                       "WHERE date >= '%s' and date <='%s'",
+                       "ORDER BY Date")
+  }
 
   data <- chieR::runSQLQuery(conn  = moadConn,
-                             query = sprintf(dateQuery, startDate, endDate))[, Date := as.Date(Date)][, formattedMonth := format(Date, "%b-%y")]
+                             query = sprintf(dateQuery, startDate, endDate))[, Date := as.Date(Date)][, formattedMonth := format(Date, "%b-%y")][]
+
+  if(standard == "SiaaS"){
+    # concat(outlookYear, ' ww', RIGHT('0' + CONVERT(VARCHAR(2), outlookWeek), 2)) as formattedWeek,
+    # "concat(outlookYear, ' ww', RIGHT('0' + CONVERT(VARCHAR(2), outlookWeek), 2), '.', internationalDay) as formattedDay,",
+    dayFormat <- "%Y/%m/%d"
+    data[, formattedDay := format(Date, dayFormat)]
+    data[, formattedWeek := format(Date - ((wday(Date) - 2) %% 7), dayFormat)]
+  }
 
   setkey(data, Date)
 
