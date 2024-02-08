@@ -5,9 +5,17 @@
 #' @examples
 #' sgUsers("06132b8c-7940-4244-a032-389382b4fb64")
 sgUsers <- function(sgIds){
+  # Get secret from key vault
+  secret <- key_vault("https://schie-chatbot-vault.vault.azure.net/secrets/azfunc-code-vault/bd046283ff1f4a869368fca9009ea706",
+                      as_managed_identity = FALSE)$secrets$get("azfunc-code-vault")$value
+
+  # Paste together URL and secret
+  urlPrefix <- paste0("https://schiesgreader.azurewebsites.net/api/SCHIESGReader?code=",
+                      secret)
   data <- rbindlist(lapply(sgIds, function(sgId){
     print(sgId)
-    URL <- sprintf("https://schiesgreader.azurewebsites.net/api/SCHIESGReader?code=dFIVFM3HYyQ8iJDbTPprQDKElrcccAfaD0Yr6cKPw7zCAzFulPDmLA==&sgId=%s",
+    URL <- sprintf(paste0(urlPrefix,
+                          "&sgId=%s"),
                    sgId)
     fromJSON(content(GET(url = URL),
                      "text",
