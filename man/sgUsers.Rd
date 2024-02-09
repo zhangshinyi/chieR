@@ -4,7 +4,7 @@
 \alias{sgUsers}
 \title{Given one or more security group IDs, return a vector of valid user IDs}
 \usage{
-sgUsers(sgIds)
+sgUsers(sgIds, secret = NULL)
 }
 \arguments{
 \item{sgIds}{is a vector of security IDs}
