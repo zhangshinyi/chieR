@@ -16,4 +16,25 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
-    magrittr
+    arrow,
+    dplyr,
+    DT,
+    extrafont,
+    ganttrify,
+    ggplot2,
+    httr,
+    jsonlite,
+    lubridate,
+    magrittr,
+    openxlsx,
+    reactable,
+    rlang,
+    RODBC,
+    scales,
+    shiny,
+    shinyBS,
+    shinydashboard,
+    shinyjs,
+    shinyMCE,
+    shinyWidgets,
+    stringr
