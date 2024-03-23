@@ -4,7 +4,7 @@
 \alias{sqlConnect}
 \title{Connect to MoAD, other databases.}
 \usage{
-sqlConnect(server)
+sqlConnect(server, token = NULL, managedID = NULL)
 }
 \arguments{
 \item{server}{should be "chiemoaddev", "chiemoadprd", or "dsireport"}
