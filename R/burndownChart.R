@@ -27,7 +27,7 @@
 #' totalLine  <- data[, .(Backlog = priorQueue + sum(value)), by = .(Period)]
 #' burndownChart(burndownBars  = data,
 #'               backlogLine  = totalLine)
-burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL, sourceName = NULL, colorPalette = "Standard"){
+burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizontalLegend = NULL, sourceName = NULL, colorPalette = "Standard", showBacklog = TRUE){
   if(!is.factor(burndownBars$lens)){
     burndownBars <- copy(burndownBars)[, lens := factor(lens, levels = sort(unique(lens)))]
   }
@@ -55,14 +55,18 @@ burndownChart <- function(burndownBars, backlogLine, legendHeight = 1.05, horizo
     layout(barmode = "relative",
            xaxis   = list(title     = "",
                           tickangle = 320),
-           yaxis   = list(title = "")) %>%
-    add_markers(data   = backlogLine,
-                x      = backlogLine$Period,
-                y      = ~backlogLine$Backlog,
-                name   = "Backlog",
-                marker = list(color = "rgb(0, 0, 0)"),
-                line   = list(color = "rgb(0, 0, 0)",
-                              dash  = "dash")) %>%
+           yaxis   = list(title = ""))
+  if(showBacklog){
+    plot <- plot %>%
+      add_markers(data   = backlogLine,
+                  x      = backlogLine$Period,
+                  y      = ~backlogLine$Backlog,
+                  name   = "Backlog",
+                  marker = list(color = "rgb(0, 0, 0)"),
+                  line   = list(color = "rgb(0, 0, 0)",
+                                dash  = "dash"))
+  }
+  plot <- plot %>%
     add_annotations(data      = barTotals,
                     x         = ~(as.numeric(Period) - 1),
                     y         = ~value,

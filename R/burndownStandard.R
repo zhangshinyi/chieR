@@ -13,7 +13,8 @@ burndownStandard <- function(input, output, session, burndownData,
                              burndownActionButtonGroupList = NULL,
                              actionButtonInputFunction     = NULL,
                              filterDefaultSelectedValues   = NULL,
-                             defaultLens                   = "None"){
+                             defaultLens                   = "None",
+                             showBacklog                   = TRUE){
 
   burndownWithActionButtonFilter <- reactive({
     if(!is.null(actionButtonInputFunction) & !is.null(burndownActionButtonGroupList)){
@@ -211,6 +212,7 @@ burndownStandard <- function(input, output, session, burndownData,
                burndownDateFilter()$backlog)
     chieR::burndownChart(burndownBars = melt(copy(burndownDateFilter()$inOut), c("Period", "lens"))[variable %in% c("Incoming", "Outgoing")],
                          backlogLine  = copy(burndownDateFilter()$backlog),
+                         showBacklog  = showBacklog,
                          sourceName   = paste0(keyword, "Plot"))
   })
 
