@@ -12,6 +12,7 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
                           addlTableColumns            = NULL,
                           showTable                   = FALSE,
                           averageByPeriod             = FALSE,
+                          lastDayInPeriod             = FALSE,
                           normalizeBynRow             = FALSE,
                           filterDefaultSelectedValues = NULL,
                           defaultLens                 = "None"){
@@ -94,9 +95,16 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
   })
 
   trendFiltered <- reactive({
-    shiny::req(trendData$data)
+    shiny::req(trendData$data, trendPeriodMapping())
 
     data  <- copy(trendData$data)
+
+    if(lastDayInPeriod){
+      dateMapping     <- copy(trendPeriodMapping())[Date %in% data$Date]
+      setkey(dateMapping, Date)
+      lastDayByPeriod <- dateMapping[, .SD[.N], by = Period]
+      data            <- data[Date %in% lastDayByPeriod$Date]
+    }
 
     for(i in 1:nrow(filterCols())){
       # print(i)
