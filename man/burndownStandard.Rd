@@ -16,7 +16,8 @@ burndownStandard(
   burndownActionButtonGroupList = NULL,
   actionButtonInputFunction = NULL,
   filterDefaultSelectedValues = NULL,
-  defaultLens = "None"
+  defaultLens = "None",
+  showBacklog = TRUE
 )
 }
 \arguments{

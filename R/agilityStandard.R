@@ -100,7 +100,7 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
   output[[paste0(keyword, "UI")]] <- renderUI({
     shiny::req(is.logical(showTable))
     if(showTable){
-      tableOutput <- DT::dataTableOutput(paste0(keyword, "Table"))
+      tableOutput <- reactableOutput(paste0(keyword, "Table"))
     } else {
       tableOutput <- NULL
     }
@@ -213,7 +213,7 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
     agility$clickTable <- FALSE
   })
 
-  output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+  output[[paste0(keyword, "Table")]] <- renderReactable({
     shiny::req(agilityWithPeriod(), nrow(agilityWithPeriod()) > 0,
                is.logical(agility$clickTable))
 
@@ -225,28 +225,28 @@ agilityStandard <- function(input, output, session, agilityData, keyword,
 
     tableData <- tableData[, c("Date", addlTableColumns, agilityData$filterCols), with = FALSE]
 
-    # reactable(tableData,
-    #           defaultColDef   = colDef(vAlign      = "center",
-    #                                    header      = function(value){ gsub(".", " ", value, fixed = TRUE) },
-    #                                    cell        = function(value){ format(value, nsmall = 0) },
-    #                                    align       = "center",
-    #                                    html        = TRUE,
-    #                                    minWidth    = 20,
-    #                                    headerStyle = list(background = "#f7f7f8")),
-    #           # columns         = list(`Title`   = colDef(width = 500),
-    #           #                        `SLA Met` = colDef(
-    #           #                          cell = function(value) {
-    #           #                            if(value  == "No") shiny::icon("times-circle", class = "fas",
-    #           #                                                           style = "color: #D83B01") else shiny::icon("check-circle", class = "fas",
-    #           #                                                                                                      style = "color: #107C10")
-    #           #                          }
-    #           #                        )),
-    #           striped         = TRUE,
-    #           bordered        = TRUE,
-    #           highlight       = TRUE)
-    DT::datatable(copy(tableData),
-                  options = list(lengthMenu = c(20, 50),
-                                 scrollX    = TRUE,
-                                 server     = TRUE))
+    reactable(tableData,
+              # defaultColDef   = colDef(vAlign      = "center",
+              #                          header      = function(value){ gsub(".", " ", value, fixed = TRUE) },
+              #                          cell        = function(value){ format(value, nsmall = 0) },
+              #                          align       = "center",
+              #                          html        = TRUE,
+              #                          minWidth    = 20,
+              #                          headerStyle = list(background = "#f7f7f8")),
+              # columns         = list(`Title`   = colDef(width = 500),
+              #                        `SLA Met` = colDef(
+              #                          cell = function(value) {
+              #                            if(value  == "No") shiny::icon("times-circle", class = "fas",
+              #                                                           style = "color: #D83B01") else shiny::icon("check-circle", class = "fas",
+              #                                                                                                      style = "color: #107C10")
+              #                          }
+              #                        )),
+              striped         = TRUE,
+              bordered        = TRUE,
+              highlight       = TRUE)
+    # DT::datatable(copy(tableData),
+    #               options = list(lengthMenu = c(20, 50),
+    #                              scrollX    = TRUE,
+    #                              server     = TRUE))
   })
 }

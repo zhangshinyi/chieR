@@ -17,6 +17,7 @@ trendStandard(
   addlTableColumns = NULL,
   showTable = FALSE,
   averageByPeriod = FALSE,
+  lastDayInPeriod = FALSE,
   normalizeBynRow = FALSE,
   filterDefaultSelectedValues = NULL,
   defaultLens = "None"

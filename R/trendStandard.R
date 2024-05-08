@@ -193,7 +193,7 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
   output[[paste0(keyword, "UI")]] <- renderUI({
     shiny::req(is.logical(showTable))
     if(showTable){
-      tableOutput <- DT::dataTableOutput(paste0(keyword, "Table"))
+      tableOutput <- reactableOutput(paste0(keyword, "Table"))
     } else {
       tableOutput <- NULL
     }
@@ -271,7 +271,7 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
       trend$tableData <- copy(trendDatePeriod())
     })
 
-    output[[paste0(keyword, "Table")]] <- DT::renderDataTable({
+    output[[paste0(keyword, "Table")]] <- renderReactable({
       dateRange <- input[[paste0(keyword, "DateRange")]]
 
       shiny::req(trendDatePeriod(), dateRange)
@@ -293,10 +293,29 @@ trendStandard <- function(input, output, session, trendData, keyword, title,
       # side or the client (browser) side. If server = TRUE (the default), the
       # browser receives only the displayed data. If server = FALSE the browser
       # receives all the data, which can slow it down if the dataset is large.
-      DT::datatable(copy(data),
-                    options = list(lengthMenu = c(20, 50),
-                                   scrollX    = TRUE,
-                                   server     = TRUE))
+      # DT::datatable(copy(data),
+      #               options = list(lengthMenu = c(20, 50),
+      #                              scrollX    = TRUE,
+      #                              server     = TRUE))
+      reactable(data,
+                # defaultColDef   = colDef(vAlign      = "center",
+                #                          header      = function(value){ gsub(".", " ", value, fixed = TRUE) },
+                #                          cell        = function(value){ format(value, nsmall = 0) },
+                #                          align       = "center",
+                #                          html        = TRUE,
+                #                          minWidth    = 20,
+                #                          headerStyle = list(background = "#f7f7f8")),
+                # columns         = list(`Title`   = colDef(width = 500),
+                #                        `SLA Met` = colDef(
+                #                          cell = function(value) {
+                #                            if(value  == "No") shiny::icon("times-circle", class = "fas",
+                #                                                           style = "color: #D83B01") else shiny::icon("check-circle", class = "fas",
+                #                                                                                                      style = "color: #107C10")
+                #                          }
+                #                        )),
+                striped         = TRUE,
+                bordered        = TRUE,
+                highlight       = TRUE)
     })
   }
 }
