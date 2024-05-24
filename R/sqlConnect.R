@@ -4,7 +4,7 @@
 #' @export
 #' @examples
 #' sqlConnect()
-sqlConnect <- function(server, token = NULL, managedID = NULL){
+sqlConnect <- function(server, token = NULL, managedID = NULL, clientID = NULL, clientSecret = NULL){
   if(!server %in% c("chiemoaddev", "dsireport", "chiemoadprd")){
     stop("Invalid input for server")
   }
@@ -23,12 +23,16 @@ sqlConnect <- function(server, token = NULL, managedID = NULL){
     serverSuffix <- ".database.windows.net"
   }
   server              <- paste0(server, serverSuffix)
-  clientID            <- AzureKeyVault::key_vault(idURL,
-                                                  token               = token,
-                                                  as_managed_identity = managedID)$secrets$get(tail(strsplit(idURL, "/")[[1]], 1))$value
-  clientSecret        <- AzureKeyVault::key_vault(secretURL,
-                                                  token               = token,
-                                                  as_managed_identity = managedID)$secrets$get(tail(strsplit(secretURL, "/")[[1]], 1))$value
+  if(is.null(clientID)){
+    clientID <- AzureKeyVault::key_vault(idURL,
+                                         token               = token,
+                                         as_managed_identity = managedID)$secrets$get(tail(strsplit(idURL, "/")[[1]], 1))$value
+  }
+  if(is.null(clientSecret)){
+    clientSecret <- AzureKeyVault::key_vault(secretURL,
+                                             token               = token,
+                                             as_managed_identity = managedID)$secrets$get(tail(strsplit(secretURL, "/")[[1]], 1))$value
+  }
   connectionStringSQL <- sprintf("Driver={ODBC Driver 18 for SQL Server};Server=tcp:%s,1433;Database=%s;UID=%s;PWD=%s;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=15;Authentication=ActiveDirectoryServicePrincipal",
                                  server,
                                  database,
