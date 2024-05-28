@@ -6,9 +6,6 @@
 \usage{
 get_token(code)
 }
-\arguments{
-\item{code}{}
-}
 \description{
 Function to get token using authorization code
 }

@@ -1,6 +1,8 @@
 #' Function to fetch user details
-#' @param access_token 
+#' @param access_token
 #' @keywords token, user, email
+#' @export
+#' @examples
 fetch_user_email <- function(access_token){
   req <- GET(url = "https://graph.microsoft.com/v1.0/me",
              add_headers(Authorization = paste("Bearer", access_token)),

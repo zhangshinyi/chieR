@@ -6,9 +6,6 @@
 \usage{
 fetch_user_email(access_token)
 }
-\arguments{
-\item{access_token}{}
-}
 \description{
 Function to fetch user details
 }
