@@ -4,7 +4,7 @@
 \alias{get_token}
 \title{Function to get token using authorization code}
 \usage{
-get_token(code, app, tenant, password)
+get_token(code, app, tenant, password, redirect_uri)
 }
 \description{
 Function to get token using authorization code
