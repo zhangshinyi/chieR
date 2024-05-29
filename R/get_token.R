@@ -3,7 +3,7 @@
 #' @keywords token
 #' @export
 #' @examples
-get_token <- function(code){
+get_token <- function(code, app, tenant, password){
   token_url <- sprintf("https://login.microsoftonline.com/%s/oauth2/v2.0/token", tenant)
 
   req_body <- list(client_id     = app,
