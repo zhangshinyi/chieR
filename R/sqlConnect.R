@@ -1,16 +1,19 @@
 #' Connect to MoAD, other databases.
 #' @param server should be "chiemoaddev", "chiemoadprd", or "dsireport"
-#' @keywords connection
+#' @param authentication should be "ActiveDirectoryServicePrincipal", "ActiveDirectoryMsi"
+#' @keywords connection, sql, MoAD
 #' @export
 #' @examples
 #' sqlConnect()
-sqlConnect <- function(server, token = NULL, managedID = NULL, clientID = NULL, clientSecret = NULL){
+sqlConnect <- function(server, authentication = "ActiveDirectoryMsi", token = NULL, clientID = NULL, clientSecret = NULL){
   if(!server %in% c("chiemoaddev", "dsireport", "chiemoadprd")){
     stop("Invalid input for server")
   }
-  if(is.null(managedID)){
-    managedID <- ifelse(Sys.getenv("R_CONFIG_ACTIVE") == "rsconnect", TRUE, FALSE)
+
+  if(!authentication %in% c("ActiveDirectoryServicePrincipal", "ActiveDirectoryMsi")){
+    stop("Invalid input for authentication")
   }
+
   if(server %in% c("chiemoaddev", "chiemoadprd")){
     idURL        <- "https://moaddev6131880268.vault.azure.net/secrets/dev-synapse-sqlpool-sp-id/"
     secretURL    <- "https://moaddev6131880268.vault.azure.net/secrets/dev-synapse-sqlpool-sp-secret/"
@@ -22,24 +25,47 @@ sqlConnect <- function(server, token = NULL, managedID = NULL, clientID = NULL, 
     database     <- "DSIAutomation"
     serverSuffix <- ".database.windows.net"
   }
-  server              <- paste0(server, serverSuffix)
-  if(is.null(clientID)){
-    clientID <- AzureKeyVault::key_vault(idURL,
-                                         token               = token,
-                                         as_managed_identity = managedID)$secrets$get(tail(strsplit(idURL, "/")[[1]], 1))$value
+
+  server <- paste0(server, serverSuffix)
+
+  if(is.null(clientID) & authentication == "ActiveDirectoryServicePrincipal"){
+    clientID <- AzureKeyVault::key_vault(idURL)$secrets$get(tail(strsplit(idURL, "/")[[1]], 1))$value
   }
-  if(is.null(clientSecret)){
-    clientSecret <- AzureKeyVault::key_vault(secretURL,
-                                             token               = token,
-                                             as_managed_identity = managedID)$secrets$get(tail(strsplit(secretURL, "/")[[1]], 1))$value
+  if(is.null(clientSecret) & authentication == "ActiveDirectoryServicePrincipal"){
+    clientSecret <- AzureKeyVault::key_vault(secretURL)$secrets$get(tail(strsplit(secretURL, "/")[[1]], 1))$value
   }
-  connectionStringSQL <- sprintf("Driver={ODBC Driver 18 for SQL Server};Server=tcp:%s,1433;Database=%s;UID=%s;PWD=%s;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=15;Authentication=ActiveDirectoryServicePrincipal",
-                                 server,
-                                 database,
-                                 clientID,
-                                 clientSecret)
-  print("sqlConnect() connection string:")
+
+  if(authentication == "ActiveDirectoryMsi"){
+    connectionStringSQL <- sprintf(paste0("Driver={ODBC Driver 18 for SQL Server};",
+                                          "Server=tcp:%s,1433;",
+                                          "Database=%s;",
+                                          "Encrypt=yes;",
+                                          "TrustServerCertificate=no;",
+                                          "Connection Timeout=15;",
+                                          "Authentication=%s"),
+                                   server,
+                                   database,
+                                   authentication)
+  } else if(authentication == "ActiveDirectoryServicePrincipal"){
+    connectionStringSQL <- sprintf(paste0("Driver={ODBC Driver 18 for SQL Server};",
+                                          "Server=tcp:%s,1433;",
+                                          "Database=%s;",
+                                          "UID=%s;",
+                                          "PWD=%s;",
+                                          "Encrypt=yes;",
+                                          "TrustServerCertificate=no;",
+                                          "Connection Timeout=15;",
+                                          "Authentication=%s"),
+                                   server,
+                                   database,
+                                   clientID,
+                                   clientSecret,
+                                   authentication)
+  }
+  print(paste0("sqlConnect() connection string for server ", server, ":"))
   print(connectionStringSQL)
-  conn                <- RODBC::odbcDriverConnect(connectionStringSQL)
+
+  conn <- RODBC::odbcDriverConnect(connectionStringSQL)
+
   return(conn)
 }

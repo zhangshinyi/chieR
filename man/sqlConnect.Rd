@@ -6,14 +6,16 @@
 \usage{
 sqlConnect(
   server,
+  authentication = "ActiveDirectoryMsi",
   token = NULL,
-  managedID = NULL,
   clientID = NULL,
   clientSecret = NULL
 )
 }
 \arguments{
 \item{server}{should be "chiemoaddev", "chiemoadprd", or "dsireport"}
+
+\item{authentication}{should be "ActiveDirectoryServicePrincipal", "ActiveDirectoryMsi"}
 }
 \description{
 Connect to MoAD, other databases.
@@ -21,4 +23,6 @@ Connect to MoAD, other databases.
 \examples{
 sqlConnect()
 }
-\keyword{connection}
+\keyword{MoAD}
+\keyword{connection,}
+\keyword{sql,}
