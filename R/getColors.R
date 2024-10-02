@@ -49,6 +49,7 @@ getColors <- function(type = "Standard"){
                                    "TBD"             = "#FFB900",
                                    "Fleet Debug"     = "#FFB900",
                                    "Hardware Design" = "#FEF000",
+                                   "PSU"             = "#2F2F2F",
                                    "Buffer"          = "#D2B48C",
                                    "Capability Gap"  = "#9BF00B",
                                    "Other"           = "#C3B7A2"),
