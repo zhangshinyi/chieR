@@ -32,5 +32,10 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
     setkeyv(data, dateColumn)
   }
 
+  print(paste0("Data dimensions: [", paste(dim(data), collapse = ", "), "]"))
+
+  print("Data preview:")
+  print(head(data))
+
   return(data[])
 }
