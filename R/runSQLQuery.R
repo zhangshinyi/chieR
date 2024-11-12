@@ -28,7 +28,16 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
 
   print(paste("Query start time:", Sys.time()))
 
-  data <- data.table::data.table(RODBC::sqlQuery(conn, query))
+  # Attempt to pull the data up to 3 times
+  data    <- NULL
+  attempt <- 1
+  while(is.null(data) & attempt <= 3){
+    print(paste0("Attempt #", attempt))
+    try(
+      data <- data.table::data.table(RODBC::sqlQuery(conn, query))
+    )
+    attempt <- attempt + 1
+  }
 
   print(paste("Query end time:", Sys.time()))
 
