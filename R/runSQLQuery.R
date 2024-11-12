@@ -25,7 +25,12 @@ runSQLQuery <- function(conn, table = NULL, dateColumn = NULL, columns = "*", qu
   print("chieR::runSQLQuery() query:")
   print(conn)
   print(query)
+
+  print(paste("Query start time:", Sys.time()))
+
   data <- data.table::data.table(RODBC::sqlQuery(conn, query))
+
+  print(paste("Query end time:", Sys.time()))
 
   if(!is.null(dateColumn)){
     data[, eval(dateColumn) := as.Date(get(dateColumn), "%m/%d/%Y")]
