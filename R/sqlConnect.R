@@ -46,6 +46,12 @@ sqlConnect <- function(server, authentication = "ActiveDirectoryMsi", token = NU
                                    server,
                                    database,
                                    authentication)
+    if(!is.null(clientID)){
+      connectionStringSQL <- paste0(connectionStringSQL,
+                                    ";UID=",
+                                    clientID,
+                                    ";")
+    }
   } else if(authentication == "ActiveDirectoryServicePrincipal"){
     connectionStringSQL <- sprintf(paste0("Driver={ODBC Driver 18 for SQL Server};",
                                           "Server=tcp:%s,1433;",
